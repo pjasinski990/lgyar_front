@@ -1,44 +1,30 @@
-import './App.css';
-import defaultAvatar from './res/defaultAvatar.png'
-import {Container, Image, Nav, Navbar} from "react-bootstrap";
+import {Route, Routes} from "react-router-dom";
 
-const userAction = async () => {
-    const testUser = {username: 'magic_mike', password: 'password123'}
-    fetch('http://localhost:8080/login', {
-        method: 'POST',
-        mode: 'cors',
-        body: JSON.stringify(testUser),
-        headers: {'Content-Type': 'application/json'}
+import Header from './view/header/Header.js'
+import LoginPage from "./view/LoginPage";
+import RegisterPage from "./view/RegisterPage";
+
+const getLoggedUser = async () => {
+    return await fetch('http://localhost:8080/user', {
+        method: 'GET'
     })
-            .then(res => {console.log(res)})
-            .catch((err, res) => {console.log(err); console.log(res)})
-
-    // do something with myJson
 }
 
 function App() {
-    let res;
-    res = userAction();
-    console.log(res)
+    getLoggedUser()
+        .then(res => console.log(res))
 
+    const logged = false
     return (
         <>
-            <Navbar bg="dark" variant="dark">
-                <Container>
-                    <Navbar.Brand href="#">Navbar</Navbar.Brand>
-                    <Nav className="me-auto">
-                        <Nav.Link href="#home">Home</Nav.Link>
-                        <Nav.Link href="#features">Features</Nav.Link>
-                        <Nav.Link href="#pricing">Pricing</Nav.Link>
-                    </Nav>
-                    <Nav>
-                        <Nav.Link href="#user">Account</Nav.Link>
-                        <Container className={'align-self-center'}>
-                            <Image roundedCircle={true} width={30} height={30} src={defaultAvatar}></Image>
-                        </Container>
-                    </Nav>
-                </Container>
-            </Navbar>
+            <div>
+                <Routes>
+                    <Route path={'/'} element={<Header logged={logged}/>} />
+                    <Route path={'/home'} element={<Header logged={logged}/>} />
+                    <Route path={'/login'} element={<LoginPage logged={logged}/>} />
+                    <Route path={'/register'} element={<RegisterPage logged={logged}/>} />
+                </Routes>
+            </div>
         </>
     );
 }
