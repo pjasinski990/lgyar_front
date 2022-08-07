@@ -1,3 +1,4 @@
+import React from "react";
 import {Route, Routes} from "react-router-dom";
 
 import Header from './view/header/Header.js'
@@ -5,15 +6,11 @@ import LoginPage from "./view/LoginPage";
 import RegisterPage from "./view/RegisterPage";
 
 const getLoggedUser = async () => {
-    return await fetch('http://localhost:8080/user', {
-        method: 'GET'
-    })
+    // TODO retrieve token from the session / cookie
+    // return username, avatar and role
 }
 
 function App() {
-    getLoggedUser()
-        .then(res => console.log(res))
-
     const logged = false
     return (
         <>
