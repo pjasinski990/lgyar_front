@@ -3,26 +3,10 @@ import {Button, Col, Container, Form, Row} from 'react-bootstrap';
 import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import React from "react";
+import {makeFormRequest} from "../util";
 
 const postLogin = async (username, password) => {
-    // TODO refactor creating form data out of this function
-    let formBody = [];
-    formBody.push(encodeURIComponent('username') + '=' + encodeURIComponent(username))
-    formBody.push(encodeURIComponent('password') + '=' + encodeURIComponent(password))
-    formBody = formBody.join("&");
-
-    // TODO use correct backend address
-    // const address = 'http://' + process.env.REACT_APP_BACKEND_ADDRESS + '/login'
-    const address = 'http://localhost:8081/login'
-    console.log('Sending %s to %s', formBody, address)
-    return await fetch(address, {
-        body: formBody,
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-            'Access-Control-Allow-Origin': '*'
-        }
-    })
+    return makeFormRequest('login', {username: username, password: password})
 }
 
 const attemptLogin = async (event) => {
@@ -34,10 +18,9 @@ const attemptLogin = async (event) => {
             if (res.ok) {
                 res.json()
                     .then(data => {
-                        // TODO store / update access_token and refresh_token
-                        console.log(data)
-
-                        toast.success('Logged in successfully')
+                        // TODO this is not safe. use httponly cookies instead of local storage
+                        sessionStorage.setItem('access_token', data['access_token'])
+                        sessionStorage.setItem('refresh_token', data['refresh_token'])
                         window.location.replace('/home')
                     })
             }
@@ -50,10 +33,10 @@ const attemptLogin = async (event) => {
 function LoginPage(props) {
     return (
         <>
-            <Header logged={props.logged}/>
+            <Header user={props.user}/>
             <ToastContainer
                 position="top-center"
-                autoClose={3000}
+                autoClose={2000}
                 closeOnClick
                 pauseOnFocusLoss
                 draggable
@@ -80,7 +63,7 @@ function LoginPage(props) {
                 </Row>
             </Container>
         </>
-    );
+    )
 }
 
-export default LoginPage;
+export default LoginPage
