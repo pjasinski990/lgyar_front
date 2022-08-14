@@ -12,7 +12,6 @@ const postLogin = async (username, password) => {
 const attemptLogin = async (event) => {
     event.preventDefault()
     const {loginFormUsername, loginFormPassword} = document.forms[0]
-    console.log('Submitting login data: %s %s', loginFormUsername.value, loginFormPassword.value)
     postLogin(loginFormUsername.value, loginFormPassword.value)
         .then(res => {
             if (res.ok) {
