@@ -4,6 +4,7 @@ import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import React from "react";
 import {makeFormRequest} from "../util";
+import {Link} from "react-router-dom";
 
 const postLogin = async (username, password) => {
     return makeFormRequest('login', {username: username, password: password})
@@ -41,12 +42,12 @@ function LoginPage(props) {
                 draggable
                 pauseOnHover
             />
-            <Container>
-                <Row className={'mt-4 p-2'}>
+            <Container className={'content-container'}>
+                <h1>Log in</h1>
+                <Row>
                     <Col sm={4}>
-                        <h1>Log in</h1>
                         <Form onSubmit={attemptLogin}>
-                            <Form.Group className='mb-3' controlId='loginFormUsername'>
+                            <Form.Group className='mb-2' controlId='loginFormUsername'>
                                 <Form.Label>Username</Form.Label>
                                 <Form.Control type='username' placeholder='Username' />
                             </Form.Group>
@@ -59,6 +60,13 @@ function LoginPage(props) {
                             </Button>
                         </Form>
                     </Col>
+                </Row>
+                <Row>
+                    <Container className={'m-0 pt-2 pl-0'}>
+                        <small>
+                            Don't have an account? <Link to={'../register'}>Register!</Link>
+                        </small>
+                    </Container>
                 </Row>
             </Container>
         </>
