@@ -1,4 +1,44 @@
 .content-container {
     padding: 20px;
     background-color: #eee;
+    margin-top: 20px !important;
+}
+
+@media (max-width: 576px) {
+    .content-container {
+        margin-top: 0 !important;
+    }
+}
+
+.btn {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.btn-secondary {
+    background-color: darkslategrey !important;
+}
+
+.btn-primary {
+    background-color: seagreen !important;
+}
+
+#transactionValueInput, #transactionValueInput:focus {
+    border: none !important;
+    outline: none !important;
+    border-radius: 0 !important;
+    text-align: right !important;
+}
+
+.input-group {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.form-select {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
 }

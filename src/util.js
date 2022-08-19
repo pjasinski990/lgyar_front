@@ -2,6 +2,7 @@ export const makeRequest = async (url, method, body, headers) => {
     if (!headers) {
         headers = {}
     }
+    // TODO on error check if token is outdated / refresh
 
     // TODO use correct backend address
     // const address = 'http://' + process.env.REACT_APP_BACKEND_ADDRESS + '/' + url

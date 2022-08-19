@@ -1,5 +1,5 @@
 import Header from './header/Header';
-import {Button, Col, Container, Form, Row} from 'react-bootstrap';
+import {Button, Container, Form} from 'react-bootstrap';
 import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import React from "react";
@@ -13,6 +13,14 @@ const postLogin = async (username, password) => {
 const attemptLogin = async (event) => {
     event.preventDefault()
     const {loginFormUsername, loginFormPassword} = document.forms[0]
+    if (!loginFormUsername.value) {
+        toast.error('Username field is empty')
+        return
+    }
+    if (!loginFormPassword.value) {
+        toast.error('Password field is empty')
+        return
+    }
     postLogin(loginFormUsername.value, loginFormPassword.value)
         .then(res => {
             if (res.ok) {
@@ -42,32 +50,30 @@ function LoginPage(props) {
                 draggable
                 pauseOnHover
             />
-            <Container className={'content-container'}>
-                <h1>Log in</h1>
-                <Row>
-                    <Col sm={4}>
-                        <Form onSubmit={attemptLogin}>
-                            <Form.Group className='mb-2' controlId='loginFormUsername'>
-                                <Form.Label>Username</Form.Label>
-                                <Form.Control type='username' placeholder='Username' />
-                            </Form.Group>
-                            <Form.Group className='mb-3' controlId='loginFormPassword'>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control type='password' placeholder='Password' />
-                            </Form.Group>
-                            <Button variant='primary' type='submit'>
+            <Container className={'content-container border'}>
+                <div className={'col-md-4 mx-auto'}>
+                    <h1>Log in</h1>
+                    <Form onSubmit={attemptLogin}>
+                        <Form.Group className='mb-2' controlId='loginFormUsername'>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type='username' placeholder='Username' />
+                        </Form.Group>
+                        <Form.Group className='mb-4' controlId='loginFormPassword'>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type='password' placeholder='Password' />
+                        </Form.Group>
+                        <div className={'d-grid'}>
+                            <Button variant='primary' type='submit' block={'true'}>
                                 Log in
                             </Button>
-                        </Form>
-                    </Col>
-                </Row>
-                <Row>
-                    <Container className={'m-0 pt-2 pl-0'}>
+                        </div>
+                    </Form>
+                    <div className={'mx-0 pt-1'}>
                         <small>
                             Don't have an account? <Link to={'../register'}>Register!</Link>
                         </small>
-                    </Container>
-                </Row>
+                    </div>
+                </div>
             </Container>
         </>
     )

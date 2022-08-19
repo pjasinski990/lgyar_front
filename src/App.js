@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Route, Routes} from "react-router-dom";
 import LoginPage from "./view/LoginPage";
 import RegisterPage from "./view/RegisterPage";
@@ -11,7 +11,12 @@ const getEmptyUser = () => {
     return {
         username: '',
         role: '',
-        activePeriod: {},
+        activePeriod: {
+            envelopes: [],
+            transactions: [],
+            startDate: null,
+            endDate: null
+        },
         previousPeriods: [],
         logged: false
     }
@@ -33,10 +38,12 @@ const getLoggedUser = async () => {
 
 function App() {
     let [user, setUser] = useState(getEmptyUser())
-    useEffect(() => {
+    useState(() => {
         getLoggedUser()
-            .then(user => {
-                setUser(user)
+            .then(u => {
+                if (user.username !== u.username) {
+                    setUser(u)
+                }
             })
     })
 

@@ -1,7 +1,7 @@
 import Header from "./header/Header";
 import React from "react";
 import {toast, ToastContainer} from "react-toastify";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Container, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {makeFormRequest} from "../util";
 
@@ -53,35 +53,33 @@ function RegisterPage(props) {
                 pauseOnHover
             />
             <Container className={'content-container'}>
-                <h1>Register</h1>
-                <Row>
-                    <Col md={6}>
-                        <Form onSubmit={attemptRegister}>
-                            <Form.Group className='mb-2' controlId='registerFormUsername'>
-                                <Form.Label>Username</Form.Label>
-                                <Form.Control type='username' placeholder='Username' />
-                            </Form.Group>
-                            <Form.Group className='mb-2' controlId='registerFormPassword'>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control type='password' placeholder='Password' />
-                            </Form.Group>
-                            <Form.Group className='mb-3' controlId='registerFormPasswordRepeat'>
-                                <Form.Label>Repeat password</Form.Label>
-                                <Form.Control type='password' placeholder='Repeat password' />
-                            </Form.Group>
-                            <Button variant='primary' type='submit'>
+                <div className={'col-md-4 mx-auto'}>
+                    <h1>Register</h1>
+                    <Form onSubmit={attemptRegister}>
+                        <Form.Group className='mb-2' controlId='registerFormUsername'>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type='username' placeholder='Username' />
+                        </Form.Group>
+                        <Form.Group className='mb-2' controlId='registerFormPassword'>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type='password' placeholder='Password' />
+                        </Form.Group>
+                        <Form.Group className='mb-4' controlId='registerFormPasswordRepeat'>
+                            <Form.Label>Repeat password</Form.Label>
+                            <Form.Control type='password' placeholder='Repeat password' />
+                        </Form.Group>
+                        <div className={'d-grid'}>
+                            <Button variant='primary' type='submit' block={'true'}>
                                 Register
                             </Button>
-                        </Form>
-                    </Col>
-                </Row>
-                <Row>
-                    <Container className={'m-0 pt-3'}>
+                        </div>
+                    </Form>
+                    <div className={'m-0 pt-1'}>
                         <small>
                             Already have an account? <Link to={'../login'}>Log in!</Link>
                         </small>
-                    </Container>
-                </Row>
+                    </div>
+                </div>
             </Container>
         </>
     )
