@@ -1,4 +1,4 @@
-import Header from './header/Header';
+import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import React, {useState} from "react";
 import {Container, InputGroup} from "react-bootstrap";
@@ -9,22 +9,17 @@ import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form"
 import Stack from "react-bootstrap/Stack";
 import CurrencyInput from "react-currency-input-field";
-
+import {makeBackendRequest} from "../../util";
 
 function HomeNonLogged(props) {
     return (
         <>
-            <Header user={props.user}/>
             <Container className={'content-container'}>
                 <h1>Welcome!</h1>
                 <h5>Please <Link to={'../login'}>log in</Link> to get started.</h5>
             </Container>
         </>
     )
-}
-
-function createNewActivePeriod(startDate, endDate, lastPeriod) {
-
 }
 
 function ActivePeriodTransactions(props) {
@@ -72,7 +67,14 @@ function AddNewTransactionButton(props) {
     }
 
     if (props.user.activePeriod === null) {
-        return <Container className={'content-container'}>There is no active budgeting period.</Container>
+        return <Container className={'content-container'}>
+            <h3>
+                There is no active budgeting period
+            </h3>
+            <p>
+                Activate a budgeting period from the archive or create a new period using the button below.
+            </p>
+        </Container>
     }
     const envelopes = props.user.activePeriod.envelopes
     const options = envelopes.map(e => <option>{e.categoryName}</option>)
@@ -105,6 +107,25 @@ function AddNewTransactionButton(props) {
 }
 
 function HomeLogged(props) {
+    function createNewActivePeriod(e) {
+        const activePeriod = props.user.activePeriod
+        if (activePeriod) {
+            toast.error('Finish current period first')
+        }
+        else {
+            const body = JSON.stringify([{'categoryName': 'food', 'limit': '1000', 'spent': '0'}])
+            console.log(body)
+            const headers = {'Content-Type': 'application/JSON'}
+            makeBackendRequest('ap/create', 'post', body, headers)
+                .then(res => {
+                        console.log(res)
+                        res.json()
+                            .then(data => console.log(data))
+                    }
+                )
+        }
+    }
+
     const activePeriod = props.user.activePeriod
     let tooltip = ''
     if (!activePeriod) {
@@ -116,12 +137,11 @@ function HomeLogged(props) {
 
     return (
         <>
-            <Header user={props.user}/>
             <h1 className={'pt-3 text-mono'} style={{display: 'flex', justifyContent: 'center'}}>{tooltip}</h1>
             <Container className={'d-grid'}>
                 <Row>
                     <Col xs={8}>
-                        <ActivePeriodTransactions user={props.user}/>
+                        {props.user.activePeriod && <ActivePeriodTransactions user={props.user}/>}
                         <AddNewTransactionButton user={props.user}/>
                     </Col>
                     <Col>
@@ -134,7 +154,7 @@ function HomeLogged(props) {
                 <Row className={'px-1 mt-3'}>
                     <Col xs={6} className={'px-0'}>
                         <div className={'m-2 d-grid px-0'}>
-                            <Button block={'true'} variant={'secondary'}>Create new period</Button>
+                            <Button onClick={createNewActivePeriod} block={'true'} variant={'secondary'}>Create new period</Button>
                         </div>
                     </Col>
                     <Col xs={6} className={'px-0'}>

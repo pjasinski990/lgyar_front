@@ -1,13 +1,12 @@
-import Header from './header/Header';
 import {Button, Container, Form} from 'react-bootstrap';
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import React from "react";
-import {makeFormRequest} from "../util";
+import {makeBackendFormRequest} from "../../util";
 import {Link} from "react-router-dom";
 
 const postLogin = async (username, password) => {
-    return makeFormRequest('login', {username: username, password: password})
+    return makeBackendFormRequest('login', {username: username, password: password})
 }
 
 const attemptLogin = async (event) => {
@@ -41,15 +40,6 @@ const attemptLogin = async (event) => {
 function LoginPage(props) {
     return (
         <>
-            <Header user={props.user}/>
-            <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                closeOnClick
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <Container className={'content-container border'}>
                 <div className={'col-md-4 mx-auto'}>
                     <h1>Log in</h1>

@@ -1,9 +1,8 @@
-import Header from "./header/Header";
 import React from "react";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import {Button, Container, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {makeFormRequest} from "../util";
+import {makeBackendFormRequest} from "../../util";
 
 const attemptRegister = async (event) => {
     event.preventDefault()
@@ -11,6 +10,10 @@ const attemptRegister = async (event) => {
     const uname = registerFormUsername.value
     const pass = registerFormPassword.value
     const passRepeat = registerFormPasswordRepeat.value
+    if (uname.length < 6) {
+        toast.error('Username should be at least 6 characters')
+        return
+    }
     if (pass.length < 6) {
         toast.error('Password should be at least 6 characters')
         return
@@ -20,20 +23,17 @@ const attemptRegister = async (event) => {
         return
     }
 
-    makeFormRequest('register', {username: uname, password: pass})
+    makeBackendFormRequest('register', {username: uname, password: pass})
         .then(res => {
             if (res.ok) {
                 res.json()
                     .then(data => {
-                        console.log(data)
                         toast.success('Successfully registered. You can log in now.')
                     })
             }
             else {
-                console.log(res)
                 res.json()
                     .then(data => {
-                        console.log(data)
                         toast.error(data['error_message'])
                     })
             }
@@ -43,15 +43,6 @@ const attemptRegister = async (event) => {
 function RegisterPage(props) {
     return (
         <>
-            <Header user={props.user}/>
-            <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                closeOnClick
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <Container className={'content-container'}>
                 <div className={'col-md-4 mx-auto'}>
                     <h1>Register</h1>

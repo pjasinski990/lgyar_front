@@ -1,11 +1,13 @@
 import React, {useState} from "react";
 import {Route, Routes} from "react-router-dom";
-import LoginPage from "./view/LoginPage";
-import RegisterPage from "./view/RegisterPage";
-import ArchivePage from "./view/ArchivePage";
-import StatsPage from "./view/StatsPage";
-import {makeRequest} from "./util";
-import HomePage from "./view/HomePage";
+import LoginPage from "./view/pages/LoginPage";
+import RegisterPage from "./view/pages/RegisterPage";
+import ArchivePage from "./view/pages/ArchivePage";
+import StatsPage from "./view/pages/StatsPage";
+import {makeBackendRequest} from "./util";
+import HomePage from "./view/pages/HomePage";
+import Header from "./view/header/Header";
+import AdminPage from "./view/pages/AdminPage";
 
 const getEmptyUser = () => {
     return {
@@ -24,7 +26,7 @@ const getEmptyUser = () => {
 
 const getLoggedUser = async () => {
     let user = getEmptyUser()
-    const res = await makeRequest('user', 'get', null, null)
+    const res = await makeBackendRequest('user', 'get', null, null)
     if (res.ok) {
         const data = await res.json()
         user.username = data['username']
@@ -50,6 +52,7 @@ function App() {
     return (
         <>
             <div>
+                <Header user={user}/>
                 <Routes>
                     <Route path={'/'} element={user && <HomePage user={user}/>} />
                     <Route path={'/home'} element={user && <HomePage user={user}/>} />
@@ -57,6 +60,7 @@ function App() {
                     <Route path={'/register'} element={user && <RegisterPage user={user}/>} />
                     <Route path={'/archive'} element={user && <ArchivePage user={user}/>} />
                     <Route path={'/stats'} element={user && <StatsPage user={user}/>} />
+                    <Route path={'/admin'} element={user && <AdminPage user={user}/>} />
                 </Routes>
             </div>
         </>

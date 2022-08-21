@@ -1,6 +1,6 @@
 import {Container, Nav, Navbar} from 'react-bootstrap';
 import React from "react";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 
 const logout = async (event) => {
     event.preventDefault()
@@ -27,21 +27,39 @@ function HeaderLogged(props) {
                     </Nav>
                 </Container>
             </Navbar>
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                closeOnClick
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </>
     );
 }
 
 function HeaderNonLogged(props) {
     return (
-        <Navbar bg={'dark'} variant={'dark'}>
-            <Container>
-                <Navbar.Brand href='/home'>LGYAR</Navbar.Brand>
-                <Nav>
-                    <Nav.Link href='login'>Login</Nav.Link>
-                    <Nav.Link href='register'>Register</Nav.Link>
-                </Nav>
-            </Container>
-        </Navbar>
+        <>
+            <Navbar bg={'dark'} variant={'dark'}>
+                <Container>
+                    <Navbar.Brand href='/home'>LGYAR</Navbar.Brand>
+                    <Nav>
+                        <Nav.Link href='login'>Login</Nav.Link>
+                        <Nav.Link href='register'>Register</Nav.Link>
+                    </Nav>
+                </Container>
+            </Navbar>
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                closeOnClick
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+        </>
     );
 }
 
