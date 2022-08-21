@@ -12,9 +12,7 @@ const refreshAuth = async (refreshToken) => {
         method: 'get',
         headers: headers
     })
-    console.log('from refreshAuth - refresh res: ', res)
     if (!res.ok) {
-        console.log('from refreshAuth - refresh res was nok (status ', res.status, ') - returning false')
         return false
     }
 
@@ -22,9 +20,6 @@ const refreshAuth = async (refreshToken) => {
     const aToken = data['access_token']
     const rToken = data['refresh_token']
     if (aToken && rToken) {
-        console.log('refresh successful')
-        console.log('new aToken: ', aToken)
-        console.log('new rToken: ', rToken)
         sessionStorage.setItem('access_token', aToken)
         sessionStorage.setItem('refresh_token', rToken)
         return true
@@ -36,9 +31,6 @@ export const makeBackendRequest = async (url, method, body, headers) => {
     if (!headers) {
         headers = {}
     }
-
-    console.log('fetching ', url, ' with tokens: \n', sessionStorage.getItem('access_token'), '\n', sessionStorage.getItem('refresh_token'))
-
     // TODO use correct backend address
     // const address = 'http://' + process.env.REACT_APP_BACKEND_ADDRESS + '/' + url
     const address = 'http://localhost:8081/' + url
@@ -57,17 +49,17 @@ export const makeBackendRequest = async (url, method, body, headers) => {
         const data = await clone.json()
         if (data['error_message'].startsWith('The Token has expired on ')) {
             const refresh_token = sessionStorage.getItem('refresh_token')
-            console.log('tried to fetch ', address, ' but the token has expired. refreshing with token ', refresh_token)
             const didRefresh = await refreshAuth(refresh_token)
-            console.log('refresh status: ', didRefresh)
+            // Retry the original request on success
             if (didRefresh) {
                 return makeBackendRequest(url, method, body, headers)
             }
+            // Handle expired session
             else {
-                console.log('refresh was unsuccessful (status ', res.status, ')')
-                localStorage.clear()
-                // window.location.replace('/login')
-                toast.error('Your session has expired. Please log in.')
+                if (!!sessionStorage.getItem('access_token')) {
+                    sessionStorage.clear()
+                    window.location.replace('/login')
+                }
             }
         }
     }

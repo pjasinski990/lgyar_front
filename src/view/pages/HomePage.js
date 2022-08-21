@@ -10,6 +10,7 @@ import Form from "react-bootstrap/Form"
 import Stack from "react-bootstrap/Stack";
 import CurrencyInput from "react-currency-input-field";
 import {makeBackendRequest} from "../../util";
+import {defaultEnvelopes} from "../../res/defaultEnvelopes";
 
 function HomeNonLogged(props) {
     return (
@@ -23,10 +24,10 @@ function HomeNonLogged(props) {
 }
 
 function ActivePeriodTransactions(props) {
-    const transactions = props.user.activePeriod
-    if (transactions === null) {
+    const transactions = props.user.activePeriod.transactions
+    if (transactions === null || transactions.length === 0) {
         return <Container className={'content-container'}>
-            No transactions yet... Create one using the button below
+            No transactions yet... Create one using the form below
         </Container>
     }
     else {
@@ -40,29 +41,28 @@ function ActivePeriodTransactions(props) {
 }
 
 function AddNewTransactionButton(props) {
-    const [selectedTransactionCategory, setSelectedTransactionCategory] = useState('')
-    const handleTransactionCategoryChange = e => {
-        console.log('Label: ', e.target.selectedOptions[0].label)
-        console.log(e.target.value)
-        setSelectedTransactionCategory(e.target.value)
+    const [transactionCategory, setSelectedTransactionCategory] = useState('')
+    const [transactionType, setSelectedTransactionType] = useState('expense')
+    const [transactionValue, setSelectedTransactionValue] = useState('')
+
+    const handleTransactionCategoryChange = event => {
+        setSelectedTransactionCategory(event.target.value)
     }
-    const addTransaction = e => {
-        console.log(e)
-        console.log(selectedTransactionCategory)
+    const handleTransactionTypeChange = event => {
+        setSelectedTransactionType(event.target.value)
+        updateTransactionValueBorder(event.target.value)
+    }
+    const handleTransactionValueChange = event => {
+        setSelectedTransactionValue(event.target.value)
     }
 
-    const [selectedTransactionType, setSelectedTransactionType] = useState('')
-    const handleTransactionTypeChange = e => {
-        console.log('Label: ', e.target.selectedOptions[0].label)
-        console.log(e.target.value)
-        setSelectedTransactionType(e.target.value)
-
+    const updateTransactionValueBorder = (transactionType) => {
         const valueField = document.getElementById('transactionValueInput')
-        if (e.target.value === 'income') {
-            valueField.style.boxShadow = '0 0 3px green'
+        if (transactionType === 'income') {
+            valueField.style.boxShadow = '0 0 1px green'
         }
-        else if (e.target.value === 'expense') {
-            valueField.style.boxShadow = '0 0 3px red'
+        else if (transactionType === 'expense') {
+            valueField.style.boxShadow = '0 0 1px red'
         }
     }
 
@@ -72,57 +72,94 @@ function AddNewTransactionButton(props) {
                 There is no active budgeting period
             </h3>
             <p>
-                Activate a budgeting period from the archive or create a new period using the button below.
+                Activate a budgeting period from the archive or create a new period using the button below
             </p>
         </Container>
     }
     const envelopes = props.user.activePeriod.envelopes
-    const options = envelopes.map(e => <option>{e.categoryName}</option>)
+    const options = envelopes.map(e => {
+        return <option key={e.categoryName}>{e.categoryName}</option>
+    })
+
+    const addTransaction = e => {
+        e.preventDefault()
+        if (transactionCategory === '') {
+            toast.error('Select an envelope for this transaction')
+        }
+        else if (transactionValue === '') {
+            toast.error('Input a value for this transaction')
+        }
+    }
 
     return (
         <Container className={'content-container'}>
-            <Stack direction={'horizontal'}>
-                <InputGroup className={'text-mono'}>
-                    <Form.Select value={selectedTransactionCategory} onChange={handleTransactionCategoryChange} className={'mx-1'}>
+            <Form className={'text-mono'} onSubmit={addTransaction}>
+                <Stack direction={'horizontal'}>
+                    <Form.Select value={transactionCategory} onChange={handleTransactionCategoryChange} className={'mx-1'}>
                         <option disabled={true} value={''}>Choose the envelope</option>
                         {options}
                     </Form.Select>
-                    <Form.Select value={selectedTransactionType} onChange={handleTransactionTypeChange} className={'mx-1'}>
-                        <option value={'income'}>Income</option>
+                    <Form.Select value={transactionType} onChange={handleTransactionTypeChange} className={'mx-1'}>
                         <option value={'expense'}>Expense</option>
+                        <option value={'income'}>Income</option>
                     </Form.Select>
                     <CurrencyInput
+                        style={{boxShadow: '0 0 1px red'}}
                         id={'transactionValueInput'}
                         disableGroupSeparators={true}
                         placeholder={'$0.00'}
-                        prefix={'$'}
-                        onValueChange={(name, value) => console.log(value, name)}
                         className={'mx-1'}
+                        onChange={handleTransactionValueChange}
                     />
-                    <Button onClick={addTransaction} className={'mx-1'}>Add</Button>
-                </InputGroup>
-            </Stack>
+                    <Button type={'submit'} className={'mx-1'}>Add</Button>
+                </Stack>
+            </Form>
         </Container>
     )
 }
 
 function HomeLogged(props) {
-    function createNewActivePeriod(e) {
+    function createNewActivePeriod(event) {
         const activePeriod = props.user.activePeriod
         if (activePeriod) {
             toast.error('Finish current period first')
         }
         else {
-            const body = JSON.stringify([{'categoryName': 'food', 'limit': '1000', 'spent': '0'}])
-            console.log(body)
+            // const body = JSON.stringify([{'categoryName': 'food', 'limit': '1000', 'spent': '0'}])
             const headers = {'Content-Type': 'application/JSON'}
+            let body
+            if (props.user.previousPeriods.length > 0) {
+                const previousPeriods = props.user.previousPeriods
+                const lastEnvelopes = previousPeriods[previousPeriods.length - 1].envelopes
+                const lastEnvelopesCleaned = lastEnvelopes.map((e) => { e.limit = 0; e.spent = 0; return e })
+                body = JSON.stringify(lastEnvelopesCleaned)
+            }
+            else {
+                body = JSON.stringify(defaultEnvelopes)
+            }
             makeBackendRequest('ap/create', 'post', body, headers)
                 .then(res => {
                         console.log(res)
                         res.json()
-                            .then(data => console.log(data))
+                            .then(data => {
+                                console.log(data)
+                                window.location.reload(false)
+                            })
                     }
                 )
+        }
+    }
+
+    function finishCurrentActivePeriod(event) {
+        if (!props.user.activePeriod) {
+            toast.error('There is no budgeting period activated')
+        }
+        else {
+            makeBackendRequest('ap/archive', 'post', null, null)
+                .then(res => {
+                    console.log(res)
+                    window.location.reload(false)
+                })
         }
     }
 
@@ -132,7 +169,7 @@ function HomeLogged(props) {
         tooltip = 'NO ACTIVE PERIOD'
     }
     else {
-        tooltip = activePeriod.startDate + ' ' + activePeriod.endDate
+        tooltip = activePeriod.startDate + '  -  ' + activePeriod.endDate
     }
 
     return (
@@ -159,7 +196,7 @@ function HomeLogged(props) {
                     </Col>
                     <Col xs={6} className={'px-0'}>
                         <div className={'m-2 d-grid px-0'}>
-                            <Button block={'true'}>Finish current period</Button>
+                            <Button onClick={finishCurrentActivePeriod} block={'true'}>Finish current period</Button>
                         </div>
                     </Col>
                 </Row>

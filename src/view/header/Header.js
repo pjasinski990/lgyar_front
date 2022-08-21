@@ -64,6 +64,9 @@ function HeaderNonLogged(props) {
 }
 
 function Header(props) {
+    if (props.error) {
+        toast.error(props.error)
+    }
     const logged = props.user.logged
     const isAdmin = props.user.role === 'ROLE_ADMIN'
     return logged ? <HeaderLogged isAdmin={isAdmin}/> : <HeaderNonLogged/>
