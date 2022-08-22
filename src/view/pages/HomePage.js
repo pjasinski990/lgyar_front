@@ -11,6 +11,7 @@ import Stack from "react-bootstrap/Stack";
 import CurrencyInput from "react-currency-input-field";
 import {makeBackendRequest} from "../../util";
 import {defaultEnvelopes} from "../../res/defaultEnvelopes";
+import dateFormat from "dateformat";
 
 function HomeNonLogged(props) {
     return (
@@ -31,7 +32,7 @@ function ActivePeriodTransactions(props) {
         </Container>
     }
     else {
-        const result = transactions.map(t => <p>{t}</p>)
+        const result = transactions.map(t => <p key={t.timestamp}>from {t.timestamp}: {t.category} {t.balanceDifference}</p>)
         return (
             <Container className={'content-container'}>
                 {result}
@@ -52,8 +53,8 @@ function AddNewTransactionButton(props) {
         setSelectedTransactionType(event.target.value)
         updateTransactionValueBorder(event.target.value)
     }
-    const handleTransactionValueChange = event => {
-        setSelectedTransactionValue(event.target.value)
+    const handleTransactionValueChange = (value) => {
+        setSelectedTransactionValue(value)
     }
 
     const updateTransactionValueBorder = (transactionType) => {
@@ -89,6 +90,18 @@ function AddNewTransactionButton(props) {
         else if (transactionValue === '') {
             toast.error('Input a value for this transaction')
         }
+
+        console.log(transactionCategory, ' ', transactionType, ' ', transactionValue)
+        const diff = transactionType === 'income'? transactionValue : '-' + transactionValue
+        const now = dateFormat(new Date(), 'dd.mm.yyyy HH:MM:ss')
+        const newTransaction = {category: transactionCategory, balanceDifference: diff, timestamp: now}
+        const headers = {'Content-Type': 'application/JSON'}
+        const body = JSON.stringify(newTransaction)
+        makeBackendRequest('ap/new_transaction', 'post', body, headers)
+            .then(res => {
+                console.log(res)
+                window.location.reload(false)
+            })
     }
 
     return (
@@ -107,9 +120,10 @@ function AddNewTransactionButton(props) {
                         style={{boxShadow: '0 0 1px red'}}
                         id={'transactionValueInput'}
                         disableGroupSeparators={true}
-                        placeholder={'$0.00'}
+                        allowNegativeValue={false}
+                        placeholder={'0.00'}
                         className={'mx-1'}
-                        onChange={handleTransactionValueChange}
+                        onValueChange={handleTransactionValueChange}
                     />
                     <Button type={'submit'} className={'mx-1'}>Add</Button>
                 </Stack>
@@ -125,7 +139,6 @@ function HomeLogged(props) {
             toast.error('Finish current period first')
         }
         else {
-            // const body = JSON.stringify([{'categoryName': 'food', 'limit': '1000', 'spent': '0'}])
             const headers = {'Content-Type': 'application/JSON'}
             let body
             if (props.user.previousPeriods.length > 0) {
