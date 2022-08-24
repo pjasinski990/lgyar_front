@@ -42,3 +42,13 @@
     border-radius: 0 !important;
     box-shadow: none !important;
 }
+
+.transaction-income {
+    background-color: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 255, 0, 0.3) 0 3px 3px -1px;
+}
+
+.transaction-expense {
+    background-color: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(255, 0, 0, 0.3) 0 3px 3px -1px;
+}
