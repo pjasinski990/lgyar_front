@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import React from "react";
 import {Button} from "react-bootstrap";
-import {getTransactionType, makeBackendRequest} from "../../../util";
+import {getTransactionType, makeBackendRequest} from "../../../../util";
 
 const removeButtonStyle = {
     backgroundColor: 'crimson',
@@ -12,7 +12,8 @@ const removeButtonStyle = {
 
 function Transaction(props) {
     Transaction.propTypes = {
-        transactionObject: PropTypes.object.isRequired
+        transactionObject: PropTypes.object.isRequired,
+        onTransactionRemoved: PropTypes.func.isRequired
     }
 
     const deleteTransaction = (e) => {
@@ -21,7 +22,7 @@ function Transaction(props) {
         const headers = {'Content-Type': 'application/JSON'}
         makeBackendRequest('ap/remove_transaction', 'post', body, headers)
             .then(res => {
-                props.onDeletedTransaction(target)
+                props.onTransactionRemoved(target)
             })
     }
 

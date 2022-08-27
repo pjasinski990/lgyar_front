@@ -8,8 +8,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import {makeBackendRequest} from "../../util";
 import {defaultEnvelopes} from "../../res/defaultEnvelopes";
-import EnvelopeContainer from "../components/envelope/EnvelopeContainer";
-import TransactionContainer from "../components/transaction/TransactionsContainer";
+import Dashboard from "../components/dashboard/Dashboard";
 
 function HomeNonLogged(props) {
     return (
@@ -83,17 +82,7 @@ function HomeLogged(props) {
                     </Container>
                 }
                 {props.user.activePeriod &&
-                    <Row>
-                        <Col lg={'8'}>
-                            <TransactionContainer user={props.user}/>
-                        </Col>
-                        <Col>
-                            <Container id={'envelope-container'} className={'content-container'}>
-                                <h3>Envelopes</h3>
-                                <EnvelopeContainer user={props.user}/>
-                            </Container>
-                        </Col>
-                    </Row>
+                    <Dashboard user={props.user}/>
                 }
                 <Row className={'px-1 mt-3'}>
                     {!props.user.activePeriod &&

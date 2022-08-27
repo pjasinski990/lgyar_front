@@ -1,13 +1,19 @@
 import React, {useState} from "react";
 import {toast} from "react-toastify";
 import dateFormat from "dateformat";
-import {makeBackendRequest} from "../../../util";
+import {makeBackendRequest} from "../../../../util";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 import CurrencyInput from "react-currency-input-field";
 import Button from "react-bootstrap/Button";
+import * as PropTypes from "prop-types";
 
 function AddNewTransactionButton(props) {
+    AddNewTransactionButton.propTypes = {
+        envelopeCategories: PropTypes.array.isRequired,
+        onTransactionAdded: PropTypes.func.isRequired
+    }
+
     const [transactionCategory, setSelectedTransactionCategory] = useState('')
     const [transactionType, setSelectedTransactionType] = useState('expense')
     const [transactionValue, setSelectedTransactionValue] = useState('')
@@ -33,9 +39,8 @@ function AddNewTransactionButton(props) {
         }
     }
 
-    const envelopes = props.user.activePeriod.envelopes
-    const options = envelopes.map(e => {
-        return <option key={e.categoryName}>{e.categoryName}</option>
+    const options = props.envelopeCategories.map(e => {
+        return <option key={e}>{e}</option>
     })
 
     const addTransaction = e => {
@@ -58,7 +63,7 @@ function AddNewTransactionButton(props) {
             .then(res => {
                 res.json()
                     .then(newTransaction => {
-                        props.onAddedTransaction(newTransaction)
+                        props.onTransactionAdded(newTransaction)
                     })
             })
     }

@@ -40,7 +40,7 @@ const getLoggedUser = async () => {
 }
 
 function App() {
-    let [user, setUser] = useState(getEmptyUser())
+    const [user, setUser] = useState(getEmptyUser())
     useState(() => {
         getLoggedUser()
             .then(u => {

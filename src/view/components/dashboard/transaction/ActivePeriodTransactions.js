@@ -1,8 +1,15 @@
 import Transaction from "./Transaction";
 import React from "react";
-import {getTransactionType} from "../../../util";
+import {getTransactionType} from "../../../../util";
+import * as PropTypes from "prop-types";
 
 function ActivePeriodTransactions(props) {
+    ActivePeriodTransactions.propTypes = {
+        transactions: PropTypes.array.isRequired,
+        onTransactionAdded: PropTypes.func.isRequired,
+        onTransactionRemoved: PropTypes.func.isRequired,
+    }
+
     const transactions = props.transactions
     if (transactions === null || transactions.length === 0) {
         return <h4 className={'mx-3'}>
@@ -25,7 +32,7 @@ function ActivePeriodTransactions(props) {
                     key={t.timestamp}
                     transactionObject={t}
                     addMargin={shouldPad}
-                    onDeletedTransaction={props.onDeletedTransaction}
+                    onTransactionRemoved={props.onTransactionRemoved}
                 />
             )
         }
