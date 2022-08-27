@@ -14,10 +14,6 @@ function EnvelopeContainer(props) {
             const nLimit = Number(e.limit)
             return <Envelope key={e.categoryName} envelopeName={e.categoryName} spent={nSpent} limit={nLimit}/>
         })
-        console.log(props.user.activePeriod.envelopes)
-        console.log(envelopes)
-        console.log(envelopes[0])
-
         return <div className={'d-grid mt-4'}>{envelopes}</div>
     }
 }

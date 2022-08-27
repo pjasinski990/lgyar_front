@@ -58,7 +58,6 @@ function AddNewTransactionButton(props) {
             .then(res => {
                 res.json()
                     .then(newTransaction => {
-                        console.log(newTransaction)
                         props.onAddedTransaction(newTransaction)
                     })
             })

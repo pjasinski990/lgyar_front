@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import React from "react";
 import {Button} from "react-bootstrap";
-import {makeBackendRequest} from "../../../util";
+import {getTransactionType, makeBackendRequest} from "../../../util";
 
 const removeButtonStyle = {
     backgroundColor: 'crimson',
@@ -12,35 +12,20 @@ const removeButtonStyle = {
 
 function Transaction(props) {
     Transaction.propTypes = {
-        value: PropTypes.string.isRequired,
-        category: PropTypes.string.isRequired,
-        timestamp: PropTypes.string.isRequired
+        transactionObject: PropTypes.object.isRequired
     }
 
     const deleteTransaction = (e) => {
-        console.log('deleting')
-        const target = {category: props.category, balanceDifference: props.value, timestamp: props.timestamp}
+        const target = props.transactionObject
         const body = JSON.stringify(target)
         const headers = {'Content-Type': 'application/JSON'}
         makeBackendRequest('ap/remove_transaction', 'post', body, headers)
             .then(res => {
-                console.log(res)
                 props.onDeletedTransaction(target)
             })
     }
 
-    let type;
-    let value;
-    const category = props.category
-    if (props.value.startsWith('-')) {
-        type = 'expense'
-        value = props.value.substr(1)
-    }
-    else {
-        type = 'income'
-        value = props.value
-    }
-
+    const type = getTransactionType(props.transactionObject)
     return (
         <div className={`
             text-mono 
@@ -52,13 +37,13 @@ function Transaction(props) {
         `}>
             <Row className={'align-items-center'}>
                 <Col xs={'4'}>
-                    {props.timestamp}
+                    {props.transactionObject.timestamp}
                 </Col>
                 <Col xs={'3'}>
-                    {category}
+                    {props.transactionObject.category}
                 </Col>
                 <Col xs={'3'} style={{textAlign: 'right'}}>
-                    {value}
+                    {props.transactionObject.balanceDifference}
                 </Col>
                 <Col xs={'2'} className={'d-grid'}>
                     <Button

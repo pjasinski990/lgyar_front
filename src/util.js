@@ -75,3 +75,8 @@ export const makeBackendFormRequest = async (url, data) => {
     const headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'}
     return makeBackendRequest(url, 'post', formBody, headers)
 }
+
+export const getTransactionType = (transaction) => {
+    return transaction.balanceDifference.startsWith('-') ? 'expense' : 'income'
+}
+

@@ -1,11 +1,8 @@
 import Transaction from "./Transaction";
 import React from "react";
+import {getTransactionType} from "../../../util";
 
 function ActivePeriodTransactions(props) {
-    const getTransactionType = (transaction) => {
-        return transaction.balanceDifference.startsWith('-') ? 'expense' : 'income'
-    }
-
     const transactions = props.transactions
     if (transactions === null || transactions.length === 0) {
         return <h4 className={'mx-3'}>
@@ -25,11 +22,9 @@ function ActivePeriodTransactions(props) {
             lastType = type
             result.push(
                 <Transaction
-                    addMargin={shouldPad}
                     key={t.timestamp}
-                    timestamp={t.timestamp}
-                    category={t.category}
-                    value={t.balanceDifference}
+                    transactionObject={t}
+                    addMargin={shouldPad}
                     onDeletedTransaction={props.onDeletedTransaction}
                 />
             )
