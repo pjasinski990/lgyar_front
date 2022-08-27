@@ -1,12 +1,11 @@
-import {Container, Nav, Navbar} from 'react-bootstrap';
-import React from "react";
-import {toast, ToastContainer} from "react-toastify";
+import {Container, Nav, Navbar} from 'react-bootstrap'
+import React from "react"
+import {toast, ToastContainer} from "react-toastify"
 
 const logout = async (event) => {
     event.preventDefault()
     sessionStorage.clear()
     window.location.replace('/home')
-    toast.success('Logged out successfully')
 }
 
 function HeaderLogged(props) {
@@ -36,7 +35,7 @@ function HeaderLogged(props) {
                 pauseOnHover
             />
         </>
-    );
+    )
 }
 
 function HeaderNonLogged(props) {
@@ -60,7 +59,7 @@ function HeaderNonLogged(props) {
                 pauseOnHover
             />
         </>
-    );
+    )
 }
 
 function Header(props) {
@@ -72,4 +71,4 @@ function Header(props) {
     return logged ? <HeaderLogged isAdmin={isAdmin}/> : <HeaderNonLogged/>
 }
 
-export default Header;
+export default Header

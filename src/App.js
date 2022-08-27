@@ -6,8 +6,9 @@ import ArchivePage from "./view/pages/ArchivePage";
 import StatsPage from "./view/pages/StatsPage";
 import {makeBackendRequest} from "./util";
 import HomePage from "./view/pages/HomePage";
-import Header from "./view/header/Header";
 import AdminPage from "./view/pages/AdminPage";
+import Header from "./view/components/header/Header";
+import Footer from "./view/components/footer/Footer";
 
 const getEmptyUser = () => {
     return {
@@ -51,20 +52,21 @@ function App() {
 
     return (
         <>
-            <div>
-                <Header user={user}/>
-                <Routes>
-                    <Route path={'/'} element={user && <HomePage user={user}/>} />
-                    <Route path={'/home'} element={user && <HomePage user={user}/>} />
-                    <Route path={'/login'} element={user && <LoginPage user={user}/>} />
-                    <Route path={'/register'} element={user && <RegisterPage user={user}/>} />
-                    <Route path={'/archive'} element={user && <ArchivePage user={user}/>} />
-                    <Route path={'/stats'} element={user && <StatsPage user={user}/>} />
-                    <Route path={'/admin'} element={user && <AdminPage user={user}/>} />
-                </Routes>
-            </div>
-        </>
-    )
+        <div>
+            <Header user={user}/>
+            <Routes>
+                <Route path={'/'} element={user && <HomePage user={user}/>} />
+                <Route path={'/home'} element={user && <HomePage user={user}/>} />
+                <Route path={'/login'} element={user && <LoginPage user={user}/>} />
+                <Route path={'/register'} element={user && <RegisterPage user={user}/>} />
+                <Route path={'/archive'} element={user && <ArchivePage user={user}/>} />
+                <Route path={'/stats'} element={user && <StatsPage user={user}/>} />
+                <Route path={'/admin'} element={user && <AdminPage user={user}/>} />
+            </Routes>
+        </div>
+    <Footer/>
+    </>
+)
 }
 
 export default App

@@ -17,11 +17,11 @@
 }
 
 .btn-secondary {
-    background-color: darkslategrey !important;
+    background-color: darkkhaki !important;
 }
 
 .btn-primary {
-    background-color: seagreen !important;
+    background-color: darkolivegreen !important;
 }
 
 #transactionValueInput, #transactionValueInput:focus {

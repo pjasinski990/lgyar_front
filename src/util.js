@@ -1,5 +1,3 @@
-import {toast} from "react-toastify";
-
 const refreshAuth = async (refreshToken) => {
     const headers = {}
     headers['Authorization'] = 'Bearer ' + refreshToken
