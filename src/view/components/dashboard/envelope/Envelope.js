@@ -29,16 +29,10 @@ function Envelope(props) {
         console.log(e.target.value)
     }
 
-    const progress = props.limit > 0 ? props.spent * 100 / props.limit : 0
+    console.log(props.spent, ' ', props.limit)
+    const progress = props.limit > 0 ? (props.limit - props.spent) * 100 / props.limit : 0
     return (
-        <div className={'d-flex'}>
-            <ProgressBar input={progress}
-                         pathColor={['#125521', 'green']}
-                         shape={'arc'}
-                         clockwise={false}
-                         trailWidth={16}
-                         pathWidth={20}>
-            </ProgressBar>
+        <div className={'d-flex justify-content-between'}>
             <div>
                 <h5 style={{display: 'flex', justifyContent: 'center'}}>{props.envelopeName}</h5>
                 <div className={'d-flex mb-4'} style={{justifyContent: 'between'}}>
@@ -46,6 +40,13 @@ function Envelope(props) {
                     <Button variant={'custom'} onClick={removeEnvelope} size={'sm'} style={removeButtonStyle}>Remove</Button>
                 </div>
             </div>
+            <ProgressBar input={progress}
+                         pathColor={['#125521', 'green']}
+                         size={'100px'}
+                         clockwise={false}
+                         trailWidth={16}
+                         pathWidth={20}>
+            </ProgressBar>
         </div>)
 }
 

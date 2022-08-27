@@ -5,9 +5,30 @@ import TransactionContainer from "./transaction/TransactionsContainer";
 import Container from "react-bootstrap/Container";
 import EnvelopeContainer from "./envelope/EnvelopeContainer";
 
+const calculateMoneySpent = (category, transactions) => {
+    if (!transactions || transactions.length === 0) {
+        return 0
+    }
+
+    const relatingTransactions = transactions.filter(t => t.category === category)
+    let acc = 0
+    for (const t of relatingTransactions) {
+        acc += Number(t.balanceDifference)
+    }
+    return -acc
+}
+
+const getUpdatedEnvelopes = (envelopes, transactions) => {
+    const revaluedEnvelopes = envelopes.splice(0)
+    for (let i = 0; i < revaluedEnvelopes.length; ++i) {
+        revaluedEnvelopes[i].spent = calculateMoneySpent(revaluedEnvelopes[i].categoryName, transactions)
+    }
+    return revaluedEnvelopes
+}
+
 function Dashboard(props) {
     const [transactions, setTransactions] = useState(props.user.activePeriod.transactions)
-    const [envelopes, setEnvelopes] = useState(props.user.activePeriod.envelopes)
+    const [envelopes, setEnvelopes] = useState(getUpdatedEnvelopes(props.user.activePeriod.envelopes, props.user.activePeriod.transactions))
 
     const onTransactionAdded = (newTransaction) => {
         const newTransactions = transactions.slice()
@@ -35,7 +56,7 @@ function Dashboard(props) {
             <Col>
                 <Container id={'envelope-container'} className={'content-container'}>
                     <h3>Envelopes</h3>
-                    <EnvelopeContainer user={props.user}/>
+                    <EnvelopeContainer envelopes={envelopes}/>
                 </Container>
             </Col>
         </Row>

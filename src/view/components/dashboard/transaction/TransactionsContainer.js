@@ -4,7 +4,6 @@ import ActivePeriodTransactions from "./ActivePeriodTransactions";
 import AddNewTransactionButton from "./AddNewTransactionButton";
 import * as PropTypes from "prop-types";
 
-
 function TransactionContainer(props) {
     TransactionContainer.propTypes = {
         transactions: PropTypes.array.isRequired,

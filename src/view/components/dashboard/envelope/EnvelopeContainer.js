@@ -4,12 +4,12 @@ import React from "react";
 
 function EnvelopeContainer(props) {
     EnvelopeContainer.propTypes = {
-        user: PropTypes.object.isRequired,
+        envelopes: PropTypes.array.isRequired,
     }
 
     let envelopes;
-    if (!!props.user.activePeriod) {
-        envelopes = props.user.activePeriod.envelopes.map((e) => {
+    if (!!props.envelopes) {
+        envelopes = props.envelopes.map((e) => {
             const nSpent = Number(e.spent)
             const nLimit = Number(e.limit)
             return <Envelope key={e.categoryName} envelopeName={e.categoryName} spent={nSpent} limit={nLimit}/>

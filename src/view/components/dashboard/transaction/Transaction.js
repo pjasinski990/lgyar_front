@@ -37,16 +37,16 @@ function Transaction(props) {
             ${props.addMargin ? 'mt-2' : ''}
         `}>
             <Row className={'align-items-center'}>
-                <Col xs={'4'}>
+                <Col xs={'5'} md={'5'}>
                     {props.transactionObject.timestamp}
                 </Col>
-                <Col xs={'3'}>
+                <Col xs={'4'} md={'3'}>
                     {props.transactionObject.category}
                 </Col>
-                <Col xs={'3'} style={{textAlign: 'right'}}>
+                <Col xs={'2'} md={'2'} style={{textAlign: 'right'}}>
                     {props.transactionObject.balanceDifference}
                 </Col>
-                <Col xs={'2'} className={'d-grid'}>
+                <Col md={'2'} className={'d-grid'}>
                     <Button
                         variant={'custom'}
                         style={removeButtonStyle}
