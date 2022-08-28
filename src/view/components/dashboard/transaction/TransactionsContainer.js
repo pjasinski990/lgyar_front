@@ -15,16 +15,15 @@ function TransactionContainer(props) {
     return (
         <Container className={'content-container'}>
             <h3 className={'mb-3 mx-2'}>Transactions</h3>
+            <hr className={'mb-2'}/>
+            <AddNewTransactionButton
+                envelopeCategories={props.envelopeCategories}
+                onTransactionAdded={props.onTransactionAdded}
+            />
             <ActivePeriodTransactions
-                user={props.user}
                 transactions={props.transactions}
                 onTransactionAdded={props.onTransactionAdded}
                 onTransactionRemoved={props.onTransactionRemoved}
-            />
-            <AddNewTransactionButton
-                user={props.user}
-                envelopeCategories={props.envelopeCategories}
-                onTransactionAdded={props.onTransactionAdded}
             />
         </Container>
     )

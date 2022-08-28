@@ -12,9 +12,11 @@ function ActivePeriodTransactions(props) {
 
     const transactions = props.transactions
     if (transactions === null || transactions.length === 0) {
-        return <h4 className={'mx-3'}>
-            No transactions yet... Create one using the form below
-        </h4>
+        return (
+            <h5 className={'m-3'}>
+                No transactions yet... Create one using the form above
+            </h5>
+        )
     }
     else {
         let result = []
@@ -27,7 +29,7 @@ function ActivePeriodTransactions(props) {
                 shouldPad = true
             }
             lastType = type
-            result.push(
+            result.unshift(
                 <Transaction
                     key={t.timestamp}
                     transactionObject={t}

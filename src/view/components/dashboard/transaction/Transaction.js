@@ -16,7 +16,7 @@ function Transaction(props) {
         onTransactionRemoved: PropTypes.func.isRequired
     }
 
-    const deleteTransaction = (e) => {
+    const removeTransaction = (e) => {
         const target = props.transactionObject
         const body = JSON.stringify(target)
         const headers = {'Content-Type': 'application/JSON'}
@@ -34,16 +34,16 @@ function Transaction(props) {
             py-2 
             px-4 
             ${type === 'income' ? 'transaction-income' : 'transaction-expense'}
-            ${props.addMargin ? 'mt-2' : ''}
+            ${props.addMargin ? 'mb-2' : ''}
         `}>
             <Row className={'align-items-center'}>
-                <Col xs={'5'} md={'5'}>
+                <Col xs={'4'} md={'5'}>
                     {props.transactionObject.timestamp}
                 </Col>
-                <Col xs={'4'} md={'3'}>
+                <Col xs={'5'} md={'3'}>
                     {props.transactionObject.category}
                 </Col>
-                <Col xs={'2'} md={'2'} style={{textAlign: 'right'}}>
+                <Col xs={'3'} md={'2'} style={{textAlign: 'right'}}>
                     {props.transactionObject.balanceDifference}
                 </Col>
                 <Col md={'2'} className={'d-grid'}>
@@ -52,7 +52,7 @@ function Transaction(props) {
                         style={removeButtonStyle}
                         block={'true'}
                         className={'py-1'}
-                        onClick={deleteTransaction}
+                        onClick={removeTransaction}
                     >
                         Remove
                     </Button>

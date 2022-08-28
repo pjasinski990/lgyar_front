@@ -54,6 +54,10 @@ function AddNewTransactionButton(props) {
             return
         }
 
+        // TODO clear currency input too
+        document.getElementById('transactionForm').reset()
+        setSelectedTransactionCategory('')
+
         const diff = transactionType === 'income'? transactionValue : '-' + transactionValue
         const now = dateFormat(new Date(), 'dd.mm.yyyy HH:MM:ss')
         const newTransaction = {category: transactionCategory, balanceDifference: diff, timestamp: now}
@@ -69,14 +73,14 @@ function AddNewTransactionButton(props) {
     }
 
     return (
-        <div className={'px-0 py-3'}>
-            <Form className={'text-mono'} onSubmit={addTransaction}>
-                <Stack direction={'horizontal'}>
-                    <Form.Select value={transactionCategory} onChange={handleTransactionCategoryChange} className={'mx-1'}>
+        <div className={'px-0 mt-1 mb-2'}>
+            <Form id={'transactionForm'} className={'text-mono'} onSubmit={addTransaction}>
+                <Stack direction={'horizontal'} gap={2} className={'mx-1'}>
+                    <Form.Select value={transactionCategory} onChange={handleTransactionCategoryChange}>
                         <option disabled={true} value={''}>Choose the envelope</option>
                         {options}
                     </Form.Select>
-                    <Form.Select value={transactionType} onChange={handleTransactionTypeChange} className={'mx-1'}>
+                    <Form.Select value={transactionType} onChange={handleTransactionTypeChange}>
                         <option value={'expense'}>Expense</option>
                         <option value={'income'}>Income</option>
                     </Form.Select>
@@ -86,11 +90,10 @@ function AddNewTransactionButton(props) {
                         disableGroupSeparators={true}
                         allowNegativeValue={false}
                         decimalScale={2}
-                        placeholder={'0.00'}
-                        className={'mx-1'}
+                        placeholder={'Value'}
                         onValueChange={handleTransactionValueChange}
                     />
-                    <Button type={'submit'} className={'mx-1'}>Add</Button>
+                    <Button type={'submit'}>Add</Button>
                 </Stack>
             </Form>
         </div>

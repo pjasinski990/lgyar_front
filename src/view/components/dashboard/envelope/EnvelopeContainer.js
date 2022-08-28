@@ -5,6 +5,8 @@ import React from "react";
 function EnvelopeContainer(props) {
     EnvelopeContainer.propTypes = {
         envelopes: PropTypes.array.isRequired,
+        onEnvelopeEdited: PropTypes.func.isRequired,
+        onEnvelopeRemoved: PropTypes.func.isRequired,
     }
 
     let envelopes;
@@ -12,9 +14,20 @@ function EnvelopeContainer(props) {
         envelopes = props.envelopes.map((e) => {
             const nSpent = Number(e.spent)
             const nLimit = Number(e.limit)
-            return <Envelope key={e.categoryName} envelopeName={e.categoryName} spent={nSpent} limit={nLimit}/>
+            return (
+                <div key={e.categoryName}>
+                    <Envelope
+                        categoryName={e.categoryName}
+                        spent={nSpent}
+                        limit={nLimit}
+                        onEnvelopeEdited={props.onEnvelopeEdited}
+                        onEnvelopeRemoved={props.onEnvelopeRemoved}
+                    />
+                    <hr className={'my-2'}/>
+                </div>
+            )
         })
-        return <div className={'d-grid mt-4'}>{envelopes}</div>
+        return <div>{envelopes}</div>
     }
 }
 

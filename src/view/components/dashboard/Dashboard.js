@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import TransactionContainer from "./transaction/TransactionsContainer";
 import Container from "react-bootstrap/Container";
 import EnvelopeContainer from "./envelope/EnvelopeContainer";
+import AddNewEnvelopeButton from "./envelope/AddNewEnvelopeButton";
 
 const calculateMoneySpent = (category, transactions) => {
     if (!transactions || transactions.length === 0) {
@@ -31,9 +32,13 @@ function Dashboard(props) {
     const [envelopes, setEnvelopes] = useState(getUpdatedEnvelopes(props.user.activePeriod.envelopes, props.user.activePeriod.transactions))
 
     const onTransactionAdded = (newTransaction) => {
-        const newTransactions = transactions.slice()
-        newTransactions.push(newTransaction)
+        const newTransactions = [...transactions, newTransaction]
         setTransactions(newTransactions)
+
+        const newEnvelopes = envelopes.slice()
+        const env = newEnvelopes.find(e => e.categoryName === newTransaction.category)
+        env.spent -= Number(newTransaction.balanceDifference)
+        setEnvelopes(newEnvelopes)
     }
 
     const onTransactionRemoved = (removedTransaction) => {
@@ -41,6 +46,28 @@ function Dashboard(props) {
             return val.timestamp !== removedTransaction.timestamp
         })
         setTransactions(newTransactions)
+
+        const newEnvelopes = envelopes.slice()
+        const env = newEnvelopes.find(e => e.categoryName === removedTransaction.category)
+        env.spent += Number(removedTransaction.balanceDifference)
+        setEnvelopes(newEnvelopes)
+    }
+
+    const onEnvelopeAdded = (envelope) => {
+        const newEnvelopes = [...envelopes, envelope]
+        setEnvelopes(newEnvelopes)
+    }
+
+    const onEnvelopeEdited = (envelope) => {
+        // TODO edit envelopes
+        console.log(envelope)
+    }
+
+    const onEnvelopeRemoved = (envelope) => {
+        const newEnvelopes = envelopes.filter((val) => {
+            return val.categoryName !== envelope.categoryName
+        })
+        setEnvelopes(newEnvelopes)
     }
 
     return (
@@ -55,8 +82,17 @@ function Dashboard(props) {
             </Col>
             <Col>
                 <Container id={'envelope-container'} className={'content-container'}>
-                    <h3>Envelopes</h3>
-                    <EnvelopeContainer envelopes={envelopes}/>
+                    <h3 className={'mb-3'}>Envelopes</h3>
+                    <hr className={'mb-2'}/>
+                    <AddNewEnvelopeButton
+                        onEnvelopeAdded={onEnvelopeAdded}
+                    />
+                    <hr className={'my-2'}/>
+                    <EnvelopeContainer
+                        envelopes={envelopes}
+                        onEnvelopeEdited={onEnvelopeEdited}
+                        onEnvelopeRemoved={onEnvelopeRemoved}
+                    />
                 </Container>
             </Col>
         </Row>

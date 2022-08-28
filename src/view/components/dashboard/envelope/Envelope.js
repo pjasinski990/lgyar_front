@@ -2,6 +2,8 @@ import * as PropTypes from "prop-types";
 import ProgressBar from "react-js-progressbar";
 import Button from "react-bootstrap/Button";
 import React from "react";
+import Stack from "react-bootstrap/Stack";
+import {makeBackendRequest} from "../../../../util";
 
 const editButtonStyle = {
     flex: '1 0 40%',
@@ -16,37 +18,52 @@ const removeButtonStyle = {
 
 function Envelope(props) {
     Envelope.propTypes = {
-        envelopeName: PropTypes.string.isRequired,
+        categoryName: PropTypes.string.isRequired,
         spent: PropTypes.number.isRequired,
         limit: PropTypes.number.isRequired,
+        onEnvelopeEdited: PropTypes.func.isRequired,
+        onEnvelopeRemoved: PropTypes.func.isRequired,
+    }
+
+    const getCurrentAsObject = () => {
+        return {categoryName: props.categoryName, spent: props.spent, limit: props.limit}
     }
 
     const editEnvelope = async (e) => {
-        console.log(e.target)
+        props.onEnvelopeEdited(getCurrentAsObject())
     }
 
     const removeEnvelope = async (e) => {
-        console.log(e.target.value)
+        props.onEnvelopeRemoved(getCurrentAsObject())
+        const target = getCurrentAsObject()
+        const body = JSON.stringify(target)
+        const headers = {'Content-Type': 'application/JSON'}
+        makeBackendRequest('ap/remove_envelope', 'post', body, headers)
+            .then(res => {
+                props.onEnvelopeRemoved(target)
+            })
     }
 
-    console.log(props.spent, ' ', props.limit)
     const progress = props.limit > 0 ? (props.limit - props.spent) * 100 / props.limit : 0
     return (
-        <div className={'d-flex justify-content-between'}>
+        <div className={'d-flex justify-content-between align-items-center'}>
             <div>
-                <h5 style={{display: 'flex', justifyContent: 'center'}}>{props.envelopeName}</h5>
-                <div className={'d-flex mb-4'} style={{justifyContent: 'between'}}>
+                <h4>{props.categoryName}</h4>
+                <span className={'text-mono'}>Money left: {props.limit - props.spent}</span>
+            </div>
+            <Stack direction={'horizontal'}>
+                <div className={'d-flex flex-column mx-3'}>
                     <Button variant={'custom'} onClick={editEnvelope} size={'sm'} style={editButtonStyle}>Edit</Button>
                     <Button variant={'custom'} onClick={removeEnvelope} size={'sm'} style={removeButtonStyle}>Remove</Button>
                 </div>
-            </div>
-            <ProgressBar input={progress}
-                         pathColor={['#125521', 'green']}
-                         size={'100px'}
-                         clockwise={false}
-                         trailWidth={16}
-                         pathWidth={20}>
-            </ProgressBar>
+                <ProgressBar input={progress}
+                             pathColor={['#125521', 'green']}
+                             size={'80px'}
+                             clockwise={false}
+                             trailWidth={16}
+                             pathWidth={20}>
+                </ProgressBar>
+            </Stack>
         </div>)
 }
 

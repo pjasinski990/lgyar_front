@@ -37,6 +37,12 @@
     box-shadow: none !important;
 }
 
+.form-control {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
 .form-select {
     border: none !important;
     border-radius: 0 !important;
