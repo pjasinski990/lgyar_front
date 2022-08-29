@@ -4,11 +4,7 @@ import Col from "react-bootstrap/Col";
 import React from "react";
 import {Button} from "react-bootstrap";
 import {getTransactionType, makeBackendRequest} from "../../../../util";
-
-const removeButtonStyle = {
-    backgroundColor: 'crimson',
-    color: 'white',
-}
+import {removeButtonStyle} from "../../../../res/customButtonsStyle";
 
 function Transaction(props) {
     Transaction.propTypes = {

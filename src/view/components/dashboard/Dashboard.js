@@ -59,8 +59,8 @@ function Dashboard(props) {
     }
 
     const onEnvelopeEdited = (envelope) => {
-        // TODO edit envelopes
-        console.log(envelope)
+        const targetIndex = envelopes.findIndex(e => e.categoryName === envelope.categoryName)
+        setEnvelopes([...envelopes.splice(0, targetIndex), envelope, ...envelopes.splice(targetIndex + 1)])
     }
 
     const onEnvelopeRemoved = (envelope) => {
@@ -72,7 +72,7 @@ function Dashboard(props) {
 
     return (
         <Row>
-            <Col lg={'8'}>
+            <Col xl={'7'}>
                 <TransactionContainer
                     transactions={transactions}
                     envelopeCategories={envelopes.map(e => e.categoryName)}
@@ -80,7 +80,7 @@ function Dashboard(props) {
                     onTransactionRemoved={onTransactionRemoved}
                 />
             </Col>
-            <Col>
+            <Col xl={'5'}>
                 <Container id={'envelope-container'} className={'content-container'}>
                     <h3 className={'mb-3'}>Envelopes</h3>
                     <hr className={'mb-2'}/>

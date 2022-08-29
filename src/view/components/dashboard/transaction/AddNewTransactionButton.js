@@ -54,9 +54,7 @@ function AddNewTransactionButton(props) {
             return
         }
 
-        // TODO clear currency input too
-        document.getElementById('transactionForm').reset()
-        setSelectedTransactionCategory('')
+        // TODO guard against using the same id
 
         const diff = transactionType === 'income'? transactionValue : '-' + transactionValue
         const now = dateFormat(new Date(), 'dd.mm.yyyy HH:MM:ss')

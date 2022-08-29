@@ -29,9 +29,7 @@ function AddNewEnvelopeButton(props) {
         event.preventDefault()
         const newEnvelope = {categoryName: categoryName, spent: '0', limit: limit}
 
-        // TODO clear currency input too
-        document.getElementById('envelopeForm').reset()
-        setCategoryName('')
+        // TODO guard against using the same id
 
         const headers = {'Content-Type': 'application/JSON'}
         const body = JSON.stringify(newEnvelope)
