@@ -27,12 +27,7 @@ function Envelope(props) {
         event.preventDefault()
         const target = getCurrentAsObject()
         target.limit = newLimit
-        const body = JSON.stringify(target)
-        const headers = {'Content-Type': 'application/JSON'}
-        makeBackendRequest('ap/edit_envelope', 'post', body, headers)
-            .then(res => {
-                props.onEnvelopeEdited(target)
-            })
+        props.onEnvelopeEdited(target)
     }
 
     const removeEnvelope = async (event) => {

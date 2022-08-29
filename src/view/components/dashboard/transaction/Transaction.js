@@ -14,12 +14,7 @@ function Transaction(props) {
 
     const removeTransaction = (e) => {
         const target = props.transactionObject
-        const body = JSON.stringify(target)
-        const headers = {'Content-Type': 'application/JSON'}
-        makeBackendRequest('ap/remove_transaction', 'post', body, headers)
-            .then(res => {
-                props.onTransactionRemoved(target)
-            })
+        props.onTransactionRemoved(target)
     }
 
     const type = getTransactionType(props.transactionObject)

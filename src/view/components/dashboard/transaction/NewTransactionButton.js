@@ -59,16 +59,7 @@ function NewTransactionButton(props) {
         const diff = transactionType === 'income'? transactionValue : '-' + transactionValue
         const now = dateFormat(new Date(), 'dd.mm.yyyy HH:MM:ss')
         const newTransaction = {category: transactionCategory, balanceDifference: diff, timestamp: now}
-        const headers = {'Content-Type': 'application/JSON'}
-        const body = JSON.stringify(newTransaction)
-        makeBackendRequest('ap/add_transaction', 'post', body, headers)
-            .then(res => {
-                console.log(res)
-                res.json()
-                    .then(newTransaction => {
-                        props.onTransactionAdded(newTransaction)
-                    })
-            })
+        props.onTransactionAdded(newTransaction)
     }
 
     return (

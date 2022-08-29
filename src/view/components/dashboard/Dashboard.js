@@ -34,25 +34,47 @@ function Dashboard(props) {
     const [envelopes, setEnvelopes] = useState(getUpdatedEnvelopes(props.user.activePeriod.envelopes, props.user.activePeriod.transactions))
 
     const onTransactionAdded = (newTransaction) => {
-        const newTransactions = [...transactions, newTransaction]
-        setTransactions(newTransactions)
+        if (transactions.find(t => t.timestamp === newTransaction.timestamp)) {
+            toast.error('Slow down a little...')
+            return
+        }
+        const headers = {'Content-Type': 'application/JSON'}
+        const body = JSON.stringify(newTransaction)
+        makeBackendRequest('ap/add_transaction', 'post', body, headers)
+            .then(res => {
+                if (res.ok) {
+                    res.json()
+                        .then(newTransaction => {
+                            const newTransactions = [...transactions, newTransaction]
+                            setTransactions(newTransactions)
 
-        const newEnvelopes = envelopes.slice()
-        const env = newEnvelopes.find(e => e.categoryName === newTransaction.category)
-        env.spent -= Number(newTransaction.balanceDifference)
-        setEnvelopes(newEnvelopes)
+                            const newEnvelopes = envelopes.slice()
+                            const env = newEnvelopes.find(e => e.categoryName === newTransaction.category)
+                            env.spent -= Number(newTransaction.balanceDifference)
+                            setEnvelopes(newEnvelopes)
+                        })
+                }
+            })
+
     }
 
     const onTransactionRemoved = (removedTransaction) => {
-        const newTransactions = transactions.filter((val) => {
-            return val.timestamp !== removedTransaction.timestamp
-        })
-        setTransactions(newTransactions)
+        const body = JSON.stringify(removedTransaction)
+        const headers = {'Content-Type': 'application/JSON'}
+        makeBackendRequest('ap/remove_transaction', 'post', body, headers)
+            .then(res => {
+                if (res.ok) {
+                    const newTransactions = transactions.filter((val) => {
+                        return val.timestamp !== removedTransaction.timestamp
+                    })
+                    setTransactions(newTransactions)
 
-        const newEnvelopes = envelopes.slice()
-        const env = newEnvelopes.find(e => e.categoryName === removedTransaction.category)
-        env.spent += Number(removedTransaction.balanceDifference)
-        setEnvelopes(newEnvelopes)
+                    const newEnvelopes = envelopes.slice()
+                    const env = newEnvelopes.find(e => e.categoryName === removedTransaction.category)
+                    env.spent += Number(removedTransaction.balanceDifference)
+                    setEnvelopes(newEnvelopes)
+                }
+            })
     }
 
     const onEnvelopeAdded = (envelope) => {
@@ -65,17 +87,26 @@ function Dashboard(props) {
         const body = JSON.stringify(envelope)
         makeBackendRequest('ap/add_envelope', 'post', body, headers)
             .then(res => {
-                res.json()
-                    .then(newEnvelope => {
-                        const newEnvelopes = [...envelopes, newEnvelope]
-                        setEnvelopes(newEnvelopes)
-                    })
+                if (res.ok) {
+                    res.json()
+                        .then(newEnvelope => {
+                            const newEnvelopes = [...envelopes, newEnvelope]
+                            setEnvelopes(newEnvelopes)
+                        })
+                }
             })
     }
 
     const onEnvelopeEdited = (envelope) => {
-        const targetIndex = envelopes.findIndex(e => e.categoryName === envelope.categoryName)
-        setEnvelopes([...envelopes.splice(0, targetIndex), envelope, ...envelopes.splice(targetIndex + 1)])
+        const body = JSON.stringify(envelope)
+        const headers = {'Content-Type': 'application/JSON'}
+        makeBackendRequest('ap/edit_envelope', 'post', body, headers)
+            .then(res => {
+                if (res.ok) {
+                    const targetIndex = envelopes.findIndex(e => e.categoryName === envelope.categoryName)
+                    setEnvelopes([...envelopes.splice(0, targetIndex), envelope, ...envelopes.splice(targetIndex + 1)])
+                }
+            })
     }
 
     const onEnvelopeRemoved = (envelope) => {
@@ -87,10 +118,12 @@ function Dashboard(props) {
         const headers = {'Content-Type': 'application/JSON'}
         makeBackendRequest('ap/remove_envelope', 'post', body, headers)
             .then(res => {
-                const newEnvelopes = envelopes.filter((val) => {
-                    return val.categoryName !== envelope.categoryName
-                })
-                setEnvelopes(newEnvelopes)
+                if (res.ok) {
+                    const newEnvelopes = envelopes.filter((val) => {
+                        return val.categoryName !== envelope.categoryName
+                    })
+                    setEnvelopes(newEnvelopes)
+                }
             })
     }
 
