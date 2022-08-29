@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import ActivePeriodTransactions from "./ActivePeriodTransactions";
-import AddNewTransactionButton from "./AddNewTransactionButton";
+import NewTransactionButton from "./NewTransactionButton";
 import * as PropTypes from "prop-types";
 
 function TransactionContainer(props) {
@@ -16,7 +16,7 @@ function TransactionContainer(props) {
         <Container className={'content-container'}>
             <h3 className={'mb-3 mx-2'}>Transactions</h3>
             <hr className={'mb-2'}/>
-            <AddNewTransactionButton
+            <NewTransactionButton
                 envelopeCategories={props.envelopeCategories}
                 onTransactionAdded={props.onTransactionAdded}
             />

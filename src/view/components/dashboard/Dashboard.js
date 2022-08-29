@@ -1,10 +1,12 @@
 import React, {useState} from "react"
 import Row from "react-bootstrap/Row";
+import {toast} from "react-toastify";
 import Col from "react-bootstrap/Col";
 import TransactionContainer from "./transaction/TransactionsContainer";
 import Container from "react-bootstrap/Container";
 import EnvelopeContainer from "./envelope/EnvelopeContainer";
-import AddNewEnvelopeButton from "./envelope/AddNewEnvelopeButton";
+import NewEnvelopeButton from "./envelope/NewEnvelopeButton";
+import {makeBackendRequest} from "../../../util";
 
 const calculateMoneySpent = (category, transactions) => {
     if (!transactions || transactions.length === 0) {
@@ -54,8 +56,21 @@ function Dashboard(props) {
     }
 
     const onEnvelopeAdded = (envelope) => {
-        const newEnvelopes = [...envelopes, envelope]
-        setEnvelopes(newEnvelopes)
+        if (!!envelopes.find(e => e.categoryName === envelope.categoryName)) {
+            toast.error('Envelope with this name already exists')
+            return
+        }
+
+        const headers = {'Content-Type': 'application/JSON'}
+        const body = JSON.stringify(envelope)
+        makeBackendRequest('ap/add_envelope', 'post', body, headers)
+            .then(res => {
+                res.json()
+                    .then(newEnvelope => {
+                        const newEnvelopes = [...envelopes, newEnvelope]
+                        setEnvelopes(newEnvelopes)
+                    })
+            })
     }
 
     const onEnvelopeEdited = (envelope) => {
@@ -64,10 +79,19 @@ function Dashboard(props) {
     }
 
     const onEnvelopeRemoved = (envelope) => {
-        const newEnvelopes = envelopes.filter((val) => {
-            return val.categoryName !== envelope.categoryName
-        })
-        setEnvelopes(newEnvelopes)
+        if (!!transactions.find(t => t.category === envelope.categoryName)) {
+            toast.error('This envelope contains transactions. Remove those first.')
+            return
+        }
+        const body = JSON.stringify(envelope)
+        const headers = {'Content-Type': 'application/JSON'}
+        makeBackendRequest('ap/remove_envelope', 'post', body, headers)
+            .then(res => {
+                const newEnvelopes = envelopes.filter((val) => {
+                    return val.categoryName !== envelope.categoryName
+                })
+                setEnvelopes(newEnvelopes)
+            })
     }
 
     return (
@@ -84,7 +108,7 @@ function Dashboard(props) {
                 <Container id={'envelope-container'} className={'content-container'}>
                     <h3 className={'mb-3'}>Envelopes</h3>
                     <hr className={'mb-2'}/>
-                    <AddNewEnvelopeButton
+                    <NewEnvelopeButton
                         onEnvelopeAdded={onEnvelopeAdded}
                     />
                     <hr className={'my-2'}/>

@@ -6,8 +6,8 @@ import CurrencyInput from "react-currency-input-field";
 import Button from "react-bootstrap/Button";
 import {makeBackendRequest} from "../../../../util";
 
-function AddNewEnvelopeButton(props) {
-    AddNewEnvelopeButton.propTypes = {
+function NewEnvelopeButton(props) {
+    NewEnvelopeButton.propTypes = {
         onEnvelopeAdded: PropTypes.func.isRequired
     }
 
@@ -28,18 +28,7 @@ function AddNewEnvelopeButton(props) {
     const addEnvelope = (event) => {
         event.preventDefault()
         const newEnvelope = {categoryName: categoryName, spent: '0', limit: limit}
-
-        // TODO guard against using the same id
-
-        const headers = {'Content-Type': 'application/JSON'}
-        const body = JSON.stringify(newEnvelope)
-        makeBackendRequest('ap/add_envelope', 'post', body, headers)
-            .then(res => {
-                res.json()
-                    .then(newEnvelope => {
-                        props.onEnvelopeAdded(newEnvelope)
-                    })
-            })
+        props.onEnvelopeAdded(newEnvelope)
     }
 
     return (
@@ -63,4 +52,4 @@ function AddNewEnvelopeButton(props) {
     )
 }
 
-export default AddNewEnvelopeButton
+export default NewEnvelopeButton

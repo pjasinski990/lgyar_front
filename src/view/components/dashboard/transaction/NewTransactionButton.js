@@ -8,25 +8,25 @@ import CurrencyInput from "react-currency-input-field";
 import Button from "react-bootstrap/Button";
 import * as PropTypes from "prop-types";
 
-function AddNewTransactionButton(props) {
-    AddNewTransactionButton.propTypes = {
+function NewTransactionButton(props) {
+    NewTransactionButton.propTypes = {
         envelopeCategories: PropTypes.array.isRequired,
         onTransactionAdded: PropTypes.func.isRequired
     }
 
-    const [transactionCategory, setSelectedTransactionCategory] = useState('')
-    const [transactionType, setSelectedTransactionType] = useState('expense')
-    const [transactionValue, setSelectedTransactionValue] = useState('')
+    const [transactionCategory, setTransactionCategory] = useState('')
+    const [transactionType, setTransactionType] = useState('expense')
+    const [transactionValue, setTransactionValue] = useState('')
 
     const handleTransactionCategoryChange = event => {
-        setSelectedTransactionCategory(event.target.value)
+        setTransactionCategory(event.target.value)
     }
     const handleTransactionTypeChange = event => {
-        setSelectedTransactionType(event.target.value)
+        setTransactionType(event.target.value)
         updateTransactionValueBorder(event.target.value)
     }
     const handleTransactionValueChange = (value) => {
-        setSelectedTransactionValue(value)
+        setTransactionValue(value)
     }
 
     const updateTransactionValueBorder = (transactionType) => {
@@ -63,6 +63,7 @@ function AddNewTransactionButton(props) {
         const body = JSON.stringify(newTransaction)
         makeBackendRequest('ap/add_transaction', 'post', body, headers)
             .then(res => {
+                console.log(res)
                 res.json()
                     .then(newTransaction => {
                         props.onTransactionAdded(newTransaction)
@@ -98,4 +99,4 @@ function AddNewTransactionButton(props) {
     )
 }
 
-export default AddNewTransactionButton
+export default NewTransactionButton

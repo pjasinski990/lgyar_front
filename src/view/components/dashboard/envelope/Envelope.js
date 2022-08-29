@@ -35,20 +35,16 @@ function Envelope(props) {
             })
     }
 
-    const removeEnvelope = async (e) => {
+    const removeEnvelope = async (event) => {
+        event.preventDefault()
         const target = getCurrentAsObject()
-        const body = JSON.stringify(target)
-        const headers = {'Content-Type': 'application/JSON'}
-        makeBackendRequest('ap/remove_envelope', 'post', body, headers)
-            .then(res => {
-                props.onEnvelopeRemoved(target)
-            })
+        props.onEnvelopeRemoved(target)
     }
 
     const progress = props.limit > 0 ? (props.limit - props.spent) * 100 / props.limit : 0
     return (
         <div>
-            <h3 className={'my-0'}>{props.categoryName}</h3>
+            <h3 className={'mb-0'}>{props.categoryName}</h3>
             <div className={'d-flex justify-content-between align-items-center'}>
                 <div>
                     <Form id='editEnvelopeForm' className={'text-mono'} onSubmit={editEnvelope}>
@@ -74,7 +70,7 @@ function Envelope(props) {
                             </Button>
                         </Stack>
                     </Form>
-                    <span className={'text-mono'}>Left: {props.limit - props.spent}</span>
+                    <span className={'text-mono'}>Left: {(props.limit - props.spent).toFixed(2)}</span>
                 </div>
                 <Stack direction={'horizontal'}>
                     <div className={'d-flex flex-column mx-3'}>
@@ -82,18 +78,18 @@ function Envelope(props) {
                             variant={'custom'}
                             onClick={removeEnvelope}
                             size={'sm'}
-                            className={'py-3'}
+                            className={'py-1'}
                             style={removeButtonStyle}
                         >
                             Remove
                         </Button>
                     </div>
                     <ProgressBar input={progress}
-                                 pathColor={['#556b2f', '#4a5d23']}
-                                 size={'80px'}
+                                 pathColor={['#5f7838', '#556b2f']}
+                                 size={'72px'}
                                  clockwise={false}
                                  trailWidth={16}
-                                 pathWidth={20}>
+                                 pathWidth={32}>
                     </ProgressBar>
                 </Stack>
             </div>
