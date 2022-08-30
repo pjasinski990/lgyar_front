@@ -4,7 +4,6 @@ import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 import CurrencyInput from "react-currency-input-field";
 import Button from "react-bootstrap/Button";
-import {makeBackendRequest} from "../../../../util";
 
 function NewEnvelopeButton(props) {
     NewEnvelopeButton.propTypes = {

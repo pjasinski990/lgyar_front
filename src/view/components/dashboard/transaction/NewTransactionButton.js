@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {toast} from "react-toastify";
 import dateFormat from "dateformat";
-import {makeBackendRequest} from "../../../../util";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 import CurrencyInput from "react-currency-input-field";

@@ -18,7 +18,8 @@ const getEmptyUser = () => {
             envelopes: [],
             transactions: [],
             startDate: null,
-            endDate: null
+            endDate: null,
+            availableMoney: 0
         },
         previousPeriods: [],
         logged: false

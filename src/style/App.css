@@ -31,6 +31,17 @@
     text-align: right !important;
 }
 
+#incomeInput, #incomeInput:focus {
+    /*border: none !important;*/
+    border: none !important;
+    border-bottom: dotted 3px gray !important;
+    padding: 16px 0 !important;
+    margin: 0 0.3em !important;
+    outline: none !important;
+    border-radius: 0 !important;
+    text-align: right !important;
+}
+
 .input-group {
     border: none !important;
     border-radius: 0 !important;

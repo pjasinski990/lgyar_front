@@ -3,7 +3,6 @@ import ProgressBar from "react-js-progressbar";
 import Button from "react-bootstrap/Button";
 import React, {useState} from "react";
 import Stack from "react-bootstrap/Stack";
-import {makeBackendRequest} from "../../../../util";
 import {editButtonStyle, removeButtonStyle} from "../../../../res/customButtonsStyle";
 import Form from "react-bootstrap/Form";
 import CurrencyInput from "react-currency-input-field";
@@ -42,11 +41,11 @@ function Envelope(props) {
             <h3 className={'mb-0'}>{props.categoryName}</h3>
             <div className={'d-flex justify-content-between align-items-center'}>
                 <div>
-                    <Form id='editEnvelopeForm' className={'text-mono'} onSubmit={editEnvelope}>
+                    <Form className={'text-mono'} onSubmit={editEnvelope}>
                         <Stack direction={'horizontal'} gap={2}>
                             <span>Limit: </span>
                             <CurrencyInput
-                                style={{height: '28px', width: '50px'}}
+                                style={{height: '28px', width: '72px'}}
                                 id={'transactionValueInput'}
                                 disableGroupSeparators={true}
                                 allowNegativeValue={false}
@@ -61,7 +60,7 @@ function Envelope(props) {
                                 className={'px-0'}
                                 style={editButtonStyle}
                             >
-                                Edit
+                                Update
                             </Button>
                         </Stack>
                     </Form>

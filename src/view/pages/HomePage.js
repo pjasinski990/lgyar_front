@@ -33,7 +33,8 @@ function HomeLogged(props) {
             if (props.user.previousPeriods && props.user.previousPeriods.length > 0) {
                 const previousPeriods = props.user.previousPeriods
                 const lastEnvelopes = previousPeriods[previousPeriods.length - 1].envelopes
-                const lastEnvelopesCleaned = lastEnvelopes.map((e) => { e.limit = 0; e.spent = 0; return e })
+                const lastEnvelopesCleaned = lastEnvelopes.map((e) => { e.spent = '0'; return e })
+
                 body = JSON.stringify(lastEnvelopesCleaned)
             }
             else {
@@ -58,18 +59,8 @@ function HomeLogged(props) {
         }
     }
 
-    const activePeriod = props.user.activePeriod
-    let tooltip = ''
-    if (!activePeriod) {
-        tooltip = 'NO ACTIVE PERIOD'
-    }
-    else {
-        tooltip = activePeriod.startDate + '  -  ' + activePeriod.endDate
-    }
-
     return (
         <>
-            <h1 className={'pt-3 text-mono'} style={{display: 'flex', justifyContent: 'center'}}>{tooltip}</h1>
             <Container className={'d-grid'}>
                 {!props.user.activePeriod &&
                     <Container className={'content-container'}>

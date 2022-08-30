@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import React from "react";
 import {Button} from "react-bootstrap";
-import {getTransactionType, makeBackendRequest} from "../../../../util";
+import {getTransactionType} from "../../../../util";
 import {removeButtonStyle} from "../../../../res/customButtonsStyle";
 
 function Transaction(props) {
