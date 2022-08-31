@@ -41,14 +41,13 @@ function Dashboard(props) {
     }
 
     const [transactions, setTransactions] = useState(props.user.activePeriod.transactions)
-    const [envelopes, setEnvelopes] = useState(getUpdatedEnvelopes(props.user.activePeriod.envelopes, props.user.activePeriod.transactions))
+    const [envelopes, setEnvelopes] = useState(props.user.activePeriod.envelopes)
     const [availableMoney, setAvailableMoney] = useState(props.user.activePeriod.availableMoney)
     const [unassignedMoney, setUnassignedMoney] = useState(props.user.activePeriod.availableMoney - calculateMoneyInEnvelopes(envelopes))
 
     calculateMoneyInEnvelopes(envelopes)
 
     const onTransactionAdded = (newTransaction) => {
-        console.log('hi tadded')
         if (transactions.find(t => t.timestamp === newTransaction.timestamp)) {
             toast.error('Slow down a little...')
             return
@@ -63,9 +62,10 @@ function Dashboard(props) {
                             const newTransactions = [...transactions, newTransaction]
                             setTransactions(newTransactions)
 
-                            const newEnvelopes = envelopes.slice(0)
-                            let env = newEnvelopes.find(e => e.categoryName === newTransaction.category)
-                            env.spent -= Number(newTransaction.balanceDifference)
+                            const i = envelopes.findIndex(e => e.categoryName === newTransaction.category)
+                            const updatedEnvelope = envelopes[i]
+                            updatedEnvelope.spent -= Number(newTransaction.balanceDifference)
+                            const newEnvelopes = ([...envelopes.slice(0, i), updatedEnvelope, ...envelopes.slice(i + 1)])
                             setEnvelopes(newEnvelopes)
                         })
                 }
@@ -73,7 +73,6 @@ function Dashboard(props) {
     }
 
     const onTransactionRemoved = (removedTransaction) => {
-        console.log('hi')
         const body = JSON.stringify(removedTransaction)
         const headers = {'Content-Type': 'application/JSON'}
         makeBackendRequest('ap/remove_transaction', 'post', body, headers)
@@ -84,16 +83,16 @@ function Dashboard(props) {
                     })
                     setTransactions(newTransactions)
 
-                    const newEnvelopes = envelopes.slice()
-                    const env = newEnvelopes.find(e => e.categoryName === removedTransaction.category)
-                    env.spent += Number(removedTransaction.balanceDifference)
+                    const i = envelopes.findIndex(e => e.categoryName === removedTransaction.category)
+                    const updatedEnvelope = envelopes[i]
+                    updatedEnvelope.spent += Number(removedTransaction.balanceDifference)
+                    const newEnvelopes = ([...envelopes.slice(0, i), updatedEnvelope, ...envelopes.slice(i + 1)])
                     setEnvelopes(newEnvelopes)
                 }
             })
     }
 
     const onEnvelopeAdded = (envelope) => {
-        console.log('hi')
         if (!!envelopes.find(e => e.categoryName === envelope.categoryName)) {
             toast.error('Envelope with this name already exists')
             return
@@ -108,14 +107,13 @@ function Dashboard(props) {
                         .then(newEnvelope => {
                             const newEnvelopes = [...envelopes, newEnvelope]
                             setEnvelopes(newEnvelopes)
-                            // setUnassignedMoney(availableMoney - calculateMoneyInEnvelopes(newEnvelopes))
+                            setUnassignedMoney(availableMoney - calculateMoneyInEnvelopes(newEnvelopes))
                         })
                 }
             })
     }
 
     const onEnvelopeEdited = (envelope) => {
-        console.log('hi')
         const body = JSON.stringify(envelope)
         const headers = {'Content-Type': 'application/JSON'}
         makeBackendRequest('ap/edit_envelope', 'post', body, headers)
@@ -130,7 +128,6 @@ function Dashboard(props) {
     }
 
     const onEnvelopeRemoved = (envelope) => {
-        console.log('hi')
         if (!!transactions.find(t => t.category === envelope.categoryName)) {
             toast.error('This envelope contains transactions. Remove those first.')
             return
@@ -150,7 +147,6 @@ function Dashboard(props) {
     }
 
     const onAvailableMoneyChanged = (newValue) => {
-        console.log('hi')
         const body = JSON.stringify(newValue)
         const headers = {'Content-Type': 'application/JSON'}
         makeBackendRequest('ap/edit_available_money', 'post', body, headers)
@@ -186,7 +182,12 @@ function Dashboard(props) {
                     <Container id={'envelope-container'} className={'content-container'}>
                         <div className={'d-flex justify-content-between align-items-baseline'}>
                             <h3 className={'mb-3'}>Envelopes</h3>
-                            <span className={'text-mono'}>to assign: <b>{unassignedMoney}</b></span>
+                            {unassignedMoney !== 0 &&
+                                <span
+                                    className={'text-mono'}
+                                    style={{color: 'red'}}
+                                >to assign: <b>{unassignedMoney}</b></span>
+                            }
                         </div>
                         <hr className={'mb-2'}/>
                         <NewEnvelopeButton

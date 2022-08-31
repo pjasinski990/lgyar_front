@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import {makeBackendRequest} from "../../util";
+import {getEmptyBudgetingPeriod, makeBackendRequest} from "../../util";
 import {defaultEnvelopes} from "../../res/defaultEnvelopes";
 import Dashboard from "../components/dashboard/Dashboard";
 
@@ -28,18 +28,21 @@ function HomeLogged(props) {
             toast.error('Finish current period first')
         }
         else {
+            const newPeriod = getEmptyBudgetingPeriod()
             const headers = {'Content-Type': 'application/JSON'}
-            let body
             if (props.user.previousPeriods && props.user.previousPeriods.length > 0) {
-                const previousPeriods = props.user.previousPeriods
-                const lastEnvelopes = previousPeriods[previousPeriods.length - 1].envelopes
-                const lastEnvelopesCleaned = lastEnvelopes.map((e) => { e.spent = '0'; return e })
-
-                body = JSON.stringify(lastEnvelopesCleaned)
+                const lastPeriod = props.user.previousPeriods.slice(-1)[0]
+                const lastEnvelopes = lastPeriod.envelopes
+                newPeriod.envelopes = lastEnvelopes.map((e) => {
+                    e.spent = '0';
+                    return e
+                })
+                newPeriod.availableMoney = lastPeriod.availableMoney
             }
             else {
-                body = JSON.stringify(defaultEnvelopes)
+                newPeriod.envelopes = defaultEnvelopes
             }
+            const body = JSON.stringify(newPeriod)
             makeBackendRequest('ap/create', 'post', body, headers)
                 .then(res => {
                     window.location.reload(false)

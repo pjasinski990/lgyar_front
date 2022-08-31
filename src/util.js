@@ -80,3 +80,22 @@ export const getTransactionType = (transaction) => {
     return transaction.balanceDifference.startsWith('-') ? 'expense' : 'income'
 }
 
+export const getEmptyUser = () => {
+    return {
+        username: '',
+        role: '',
+        activePeriod: getEmptyBudgetingPeriod(),
+        previousPeriods: [],
+        logged: false
+    }
+}
+
+export const getEmptyBudgetingPeriod = () => {
+    return {
+        envelopes: [],
+        transactions: [],
+        startDate: null,
+        endDate: null,
+        availableMoney: 0
+    }
+}

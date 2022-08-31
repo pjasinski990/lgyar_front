@@ -4,27 +4,11 @@ import LoginPage from "./view/pages/LoginPage";
 import RegisterPage from "./view/pages/RegisterPage";
 import ArchivePage from "./view/pages/ArchivePage";
 import StatsPage from "./view/pages/StatsPage";
-import {makeBackendRequest} from "./util";
+import {getEmptyUser, makeBackendRequest} from "./util";
 import HomePage from "./view/pages/HomePage";
 import AdminPage from "./view/pages/AdminPage";
 import Header from "./view/components/header/Header";
 import Footer from "./view/components/footer/Footer";
-
-const getEmptyUser = () => {
-    return {
-        username: '',
-        role: '',
-        activePeriod: {
-            envelopes: [],
-            transactions: [],
-            startDate: null,
-            endDate: null,
-            availableMoney: 0
-        },
-        previousPeriods: [],
-        logged: false
-    }
-}
 
 const getLoggedUser = async () => {
     let user = getEmptyUser()
