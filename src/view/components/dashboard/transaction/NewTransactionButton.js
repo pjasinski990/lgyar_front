@@ -56,7 +56,7 @@ function NewTransactionButton(props) {
         // TODO guard against using the same id
 
         const diff = transactionType === 'income'? transactionValue : '-' + transactionValue
-        const now = dateFormat(new Date(), 'dd.mm.yyyy HH:MM:ss')
+        const now = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
         const newTransaction = {category: transactionCategory, balanceDifference: diff, timestamp: now}
         props.onTransactionAdded(newTransaction)
     }

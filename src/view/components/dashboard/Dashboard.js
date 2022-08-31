@@ -41,11 +41,9 @@ function Dashboard(props) {
     }
 
     const [transactions, setTransactions] = useState(props.user.activePeriod.transactions)
-    const [envelopes, setEnvelopes] = useState(props.user.activePeriod.envelopes)
+    const [envelopes, setEnvelopes] = useState(getUpdatedEnvelopes(props.user.activePeriod.envelopes, transactions))
     const [availableMoney, setAvailableMoney] = useState(props.user.activePeriod.availableMoney)
     const [unassignedMoney, setUnassignedMoney] = useState(props.user.activePeriod.availableMoney - calculateMoneyInEnvelopes(envelopes))
-
-    calculateMoneyInEnvelopes(envelopes)
 
     const onTransactionAdded = (newTransaction) => {
         if (transactions.find(t => t.timestamp === newTransaction.timestamp)) {
@@ -182,7 +180,13 @@ function Dashboard(props) {
                     <Container id={'envelope-container'} className={'content-container'}>
                         <div className={'d-flex justify-content-between align-items-baseline'}>
                             <h3 className={'mb-3'}>Envelopes</h3>
-                            {unassignedMoney !== 0 &&
+                            {unassignedMoney > 0 &&
+                                <span
+                                className={'text-mono'}
+                                style={{color: 'green'}}
+                                >to assign: <b>{unassignedMoney}</b></span>
+                            }
+                            {unassignedMoney < 0 &&
                                 <span
                                     className={'text-mono'}
                                     style={{color: 'red'}}

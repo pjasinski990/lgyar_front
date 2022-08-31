@@ -22,7 +22,7 @@ function TotalIncomeHeader(props) {
         <div className={'mx-2 mb-0 mt-3 text-mono'}>
             <Form className={'text-mono'} onSubmit={updateAvailableMoney}>
                 <div className={'d-flex justify-content-center'}>
-                    <h3 className={'d-inline'}>Income this month:</h3>
+                    <h3 className={'d-inline'}>Income this period:</h3>
                     <CurrencyInput
                         style={{height: '20px', fontSize: '22pt'}}
                         className={''}
