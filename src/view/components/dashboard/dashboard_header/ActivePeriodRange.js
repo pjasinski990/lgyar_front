@@ -1,9 +1,10 @@
 import React, {forwardRef, useState} from "react";
-import Button from "react-bootstrap/Button";
+import {useMediaPredicate} from 'react-media-hook'
 import DatePicker from 'react-datepicker'
 import * as propTypes from "prop-types";
 import dateFormat from "dateformat";
 import {makeBackendRequest} from "../../../../util";
+import {BiCalendarEdit} from "react-icons/bi";
 
 function PeriodRangePicker(props) {
     PeriodRangePicker.propTypes = {
@@ -36,7 +37,7 @@ function PeriodRangePicker(props) {
 }
 
 const EditRangeButton = forwardRef(({value, onClick}, ref) =>(
-    <Button onClick={onClick} ref={ref}>Edit</Button>
+    <btn onClick={onClick} ref={ref}><BiCalendarEdit cursor={'pointer'} size={'2.0em'}/></btn>
 ))
 
 
@@ -48,6 +49,7 @@ function ActivePeriodRange(props) {
 
     const [startDate, setStartDate] = useState(props.activePeriodRange.startDate)
     const [endDate, setEndDate] = useState(props.activePeriodRange.endDate)
+    const biggerThan768px = useMediaPredicate('(min-width: 768px)')
 
     const onStartDateChanged = (newDate) => {
         const body = JSON.stringify(newDate)
@@ -73,7 +75,8 @@ function ActivePeriodRange(props) {
 
     return (
         <div className={'d-flex justify-content-center align-items-center pt-3'}>
-            <h1 className={'text-mono'}>{startDate} - {endDate}</h1>
+            {biggerThan768px && <h1 className={'text-mono'}>{startDate} - {endDate}</h1>}
+            {!biggerThan768px && <h2 className={'text-mono'}>{startDate} - {endDate}</h2>}
             <div className={'mx-2 mb-2'}>
                 <PeriodRangePicker
                     onStartDateChanged={onStartDateChanged}

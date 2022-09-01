@@ -1,9 +1,10 @@
 import React, {useState} from "react";
 import Form from "react-bootstrap/Form";
 import CurrencyInput from "react-currency-input-field";
-import Button from "react-bootstrap/Button";
-import {editButtonStyle} from "../../../../res/customButtonsStyle";
+import {applyIconStyle} from "../../../../res/customButtonsStyle";
 import * as propTypes from "prop-types";
+import {MdOutlineDone} from "react-icons/md";
+import {Col, Row} from "react-bootstrap";
 
 function TotalIncomeHeader(props) {
     TotalIncomeHeader.propTypes = {
@@ -19,32 +20,34 @@ function TotalIncomeHeader(props) {
     }
 
     return (
-        <div className={'mx-2 mb-0 mt-3 text-mono'}>
-            <Form className={'text-mono'} onSubmit={updateAvailableMoney}>
-                <div className={'d-flex justify-content-center'}>
-                    <h3 className={'d-inline'}>Income this period:</h3>
-                    <CurrencyInput
-                        style={{height: '20px', fontSize: '22pt'}}
-                        className={''}
-                        id={'incomeInput'}
-                        disableGroupSeparators={true}
-                        allowNegativeValue={false}
-                        decimalScale={2}
-                        placeholder={props.availableMoney}
-                        onValueChange={value => setAvailableMoney(value)}
-                    />
-                    <div>
-                        <Button
-                            type={'submit'}
-                            variant={'custom'}
-                            size={'sm'}
-                            className={'align-self-center mt-1'}
-                            style={editButtonStyle}
-                        >
-                            Update
-                        </Button>
-                    </div>
-                </div>
+        <div className={'my-2 text-mono d-flex justify-content-center'}>
+            <Form className={'d-grid'} onSubmit={updateAvailableMoney}>
+                <Row className={'mx-2'}>
+                    <Col xs={'5'} md={'8'} className={'p-0'}>
+                        <h3>Income this period:</h3>
+                    </Col>
+                    <Col xs={'4'} className={'p-0'}>
+                        <div className={'d-flex'}>
+                            <CurrencyInput
+                                style={{width: '160px', height: '20px', fontSize: '22pt'}}
+                                id={'incomeInput'}
+                                disableGroupSeparators={true}
+                                allowNegativeValue={false}
+                                decimalScale={2}
+                                placeholder={props.availableMoney}
+                                onValueChange={value => setAvailableMoney(value)}
+                            />
+                            <btn
+                                type={'submit'}
+                                onClick={updateAvailableMoney}
+                                className={'px-2'}
+                                style={applyIconStyle}
+                            >
+                                <MdOutlineDone size={'1.1em'}/>
+                            </btn>
+                        </div>
+                    </Col>
+                </Row>
             </Form>
         </div>
     )

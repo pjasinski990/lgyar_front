@@ -53,8 +53,6 @@ function NewTransactionButton(props) {
             return
         }
 
-        // TODO guard against using the same id
-
         const diff = transactionType === 'income'? transactionValue : '-' + transactionValue
         const now = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
         const newTransaction = {category: transactionCategory, balanceDifference: diff, timestamp: now}
@@ -66,7 +64,7 @@ function NewTransactionButton(props) {
             <Form id={'transactionForm'} className={'text-mono'} onSubmit={addTransaction}>
                 <Stack direction={'horizontal'} gap={2} className={'mx-1'}>
                     <Form.Select value={transactionCategory} onChange={handleTransactionCategoryChange}>
-                        <option disabled={true} value={''}>Choose the envelope</option>
+                        <option disabled={true} value={''}>Envelope</option>
                         {options}
                     </Form.Select>
                     <Form.Select value={transactionType} onChange={handleTransactionTypeChange}>

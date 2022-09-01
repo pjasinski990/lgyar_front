@@ -2,9 +2,9 @@ import * as PropTypes from "prop-types";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import React from "react";
-import {Button} from "react-bootstrap";
 import {getTransactionType} from "../../../../util";
-import {removeButtonStyle} from "../../../../res/customButtonsStyle";
+import {removeIconStyle} from "../../../../res/customButtonsStyle";
+import {MdDeleteOutline} from "react-icons/md";
 
 function Transaction(props) {
     Transaction.propTypes = {
@@ -31,22 +31,19 @@ function Transaction(props) {
                 <Col xs={'4'} md={'5'}>
                     {props.transactionObject.timestamp}
                 </Col>
-                <Col xs={'5'} md={'3'}>
+                <Col xs={'4'} md={'3'}>
                     {props.transactionObject.category}
                 </Col>
-                <Col xs={'3'} md={'2'} style={{textAlign: 'right'}}>
+                <Col xs={'3'} md={'3'} style={{textAlign: 'right'}}>
                     {props.transactionObject.balanceDifference}
                 </Col>
-                <Col md={'2'} className={'d-grid'}>
-                    <Button
-                        variant={'custom'}
-                        style={removeButtonStyle}
-                        block={'true'}
-                        className={'py-1'}
+                <Col xs={'1'} md={'1'} className={'d-flex justify-content-end'}>
+                    <btn
+                        style={removeIconStyle}
                         onClick={removeTransaction}
                     >
-                        Remove
-                    </Button>
+                        <MdDeleteOutline size={'1.1em'}/>
+                    </btn>
                 </Col>
             </Row>
         </div>
