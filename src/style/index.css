@@ -4,6 +4,10 @@ body > #root > div {
   min-height: 85vh !important;
 }
 
+body > #root > div > #loading-icon {
+  min-height: 85vh !important;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

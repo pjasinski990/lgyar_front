@@ -9,6 +9,7 @@ import HomePage from "./view/pages/HomePage";
 import AdminPage from "./view/pages/AdminPage";
 import Header from "./view/components/header/Header";
 import Footer from "./view/components/footer/Footer";
+import {ThreeDots} from "react-loading-icons";
 
 const getLoggedUser = async () => {
     let user = getEmptyUser()
@@ -25,29 +26,43 @@ const getLoggedUser = async () => {
 }
 
 function App() {
-    const [user, setUser] = useState(getEmptyUser())
-    useState(() => {
-        getLoggedUser()
-            .then(u => {
-                if (user.username !== u.username) {
-                    setUser(u)
-                }
-            })
-    })
+    const [user, setUser] = useState(null)
+
+    getLoggedUser()
+        .then(u => {
+            if (user === null) {
+                setUser(getEmptyUser())
+            }
+            else if (user.username !== u.username) {
+                setUser(u)
+            }
+        })
 
     return (
-        <>
+    <>
         <div>
-            <Header user={user}/>
-            <Routes>
-                <Route path={'/'} element={user && <HomePage user={user}/>} />
-                <Route path={'/home'} element={user && <HomePage user={user}/>} />
-                <Route path={'/login'} element={user && <LoginPage user={user}/>} />
-                <Route path={'/register'} element={user && <RegisterPage user={user}/>} />
-                <Route path={'/archive'} element={user && <ArchivePage user={user}/>} />
-                <Route path={'/stats'} element={user && <StatsPage user={user}/>} />
-                <Route path={'/admin'} element={user && <AdminPage user={user}/>} />
-            </Routes>
+            {user === null &&
+            <>
+                <Header user={getEmptyUser()}/>
+                <div id={'loading-icon'} className={'d-flex justify-content-center align-items-center'}>
+                    <ThreeDots stroke='green' height={'5em'}/>
+                </div>
+            </>
+            }
+            {user !== null &&
+            <>
+                <Header user={user}/>
+                <Routes>
+                    <Route path={'/'} element={user && <HomePage user={user}/>} />
+                    <Route path={'/home'} element={user && <HomePage user={user}/>} />
+                    <Route path={'/login'} element={user && <LoginPage user={user}/>} />
+                    <Route path={'/register'} element={user && <RegisterPage user={user}/>} />
+                    <Route path={'/archive'} element={user && <ArchivePage user={user}/>} />
+                    <Route path={'/stats'} element={user && <StatsPage user={user}/>} />
+                    <Route path={'/admin'} element={user && <AdminPage user={user}/>} />
+                </Routes>
+            </>
+            }
         </div>
     <Footer/>
     </>
