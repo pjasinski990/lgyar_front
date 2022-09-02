@@ -5,10 +5,10 @@ const refreshAuth = async (refreshToken) => {
 
     const address = process.env.REACT_APP_BACKEND_ADDRESS + 'refresh_token'
     const res = await fetch(address, {
+        headers: headers,
+        mode: 'cors',
         body: null,
         method: 'get',
-        headers: headers,
-        mode: 'cors'
     })
     if (!res.ok) {
         return false
@@ -29,16 +29,15 @@ export const makeBackendRequest = async (url, method, body, headers) => {
     if (!headers) {
         headers = {}
     }
-    console.log(process.env.REACT_APP_BACKEND_ADDRESS)
     const address = process.env.REACT_APP_BACKEND_ADDRESS + url
     headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('access_token')
-    headers['Access-Control-Allow-Origin'] = process.env.REACT_APP_BACKEND_ADDRESS
+    headers['Access-Control-Allow-Origin'] = '*'
 
     const res = await fetch(address, {
+        headers: headers,
+        mode: 'cors',
         body: body,
         method: method,
-        headers: headers,
-        mode: 'cors'
     })
 
     // Try refreshing on unauthorized
