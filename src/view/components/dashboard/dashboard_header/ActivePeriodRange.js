@@ -37,14 +37,13 @@ function PeriodRangePicker(props) {
 }
 
 const EditRangeButton = forwardRef(({value, onClick}, ref) =>(
-    <btn onClick={onClick} ref={ref}><BiCalendarEdit cursor={'pointer'} size={'2.0em'}/></btn>
+    <button onClick={onClick} ref={ref}><BiCalendarEdit cursor={'pointer'} size={'2.0em'}/></button>
 ))
 
 
 function ActivePeriodRange(props) {
     ActivePeriodRange.propTypes = {
         activePeriodRange: propTypes.object.isRequired,
-        onPeriodRangeChanged: propTypes.func.isRequired
     }
 
     const [startDate, setStartDate] = useState(props.activePeriodRange.startDate)

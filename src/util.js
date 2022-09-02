@@ -1,3 +1,5 @@
+import {toast} from "react-toastify";
+
 const refreshAuth = async (refreshToken) => {
     const headers = {}
     headers['Authorization'] = 'Bearer ' + refreshToken
@@ -43,22 +45,27 @@ export const makeBackendRequest = async (url, method, body, headers) => {
     // Try refreshing on unauthorized
     if (res.status === 403) {
         const clone = res.clone()
-        const data = await clone.json()
-        if (data['error_message'].startsWith('The Token has expired on ')) {
-            const refresh_token = sessionStorage.getItem('refresh_token')
-            const didRefresh = await refreshAuth(refresh_token)
-            // Retry the original request on success
-            if (didRefresh) {
-                return makeBackendRequest(url, method, body, headers)
-            }
-            // Handle expired session
-            else {
-                if (!!sessionStorage.getItem('access_token')) {
-                    sessionStorage.clear()
-                    window.location.replace('/login')
+        clone.json()
+            .then(async data => {
+                if (data['error_message'].startsWith('The Token has expired on ')) {
+                    const refresh_token = sessionStorage.getItem('refresh_token')
+                    const didRefresh = await refreshAuth(refresh_token)
+                    // Retry the original request on success
+                    if (didRefresh) {
+                        return makeBackendRequest(url, method, body, headers)
+                    }
+                    // Handle expired session
+                    else {
+                        if (!!sessionStorage.getItem('access_token')) {
+                            sessionStorage.clear()
+                            window.location.replace('/login')
+                        }
+                    }
                 }
-            }
-        }
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
     return res
 }

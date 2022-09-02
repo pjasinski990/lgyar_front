@@ -53,26 +53,26 @@ function Envelope(props) {
                                 placeholder={props.limit}
                                 onValueChange={value => setNewLimit(value)}
                             />
-                            <btn
+                            <button
                                 type={'submit'}
                                 style={applyIconStyle}
                                 onClick={editEnvelope}
                             >
                                 <MdOutlineDone size={'1.1em'}/>
-                            </btn>
+                            </button>
                         </Stack>
                     </Form>
                     <span className={'text-mono'}>Left: {(props.limit - props.spent).toFixed(2)}</span>
                 </div>
                 <Stack direction={'horizontal'}>
                     <div className={'d-flex flex-column mx-3'}>
-                        <btn
+                        <button
                             type={'submit'}
                             style={removeIconStyle}
                             onClick={removeEnvelope}
                         >
                             <MdDeleteOutline size={'1.1em'}/>
-                        </btn>
+                        </button>
                     </div>
                     <ProgressBar input={progress}
                                  pathColor={['#5f7838', '#556b2f']}

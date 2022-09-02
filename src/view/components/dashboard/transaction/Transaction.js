@@ -38,12 +38,12 @@ function Transaction(props) {
                     {props.transactionObject.balanceDifference}
                 </Col>
                 <Col xs={'1'} md={'1'} className={'d-flex justify-content-end'}>
-                    <btn
+                    <button
                         style={removeIconStyle}
                         onClick={removeTransaction}
                     >
                         <MdDeleteOutline size={'1.1em'}/>
-                    </btn>
+                    </button>
                 </Col>
             </Row>
         </div>

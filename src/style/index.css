@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono&display=swap');
 
 body > #root > div {
-  min-height: 85vh !important;
+  min-height: 75vh !important;
 }
 
 body > #root > div > #loading-icon {
-  min-height: 85vh !important;
+  min-height: 75vh !important;
 }
 
 body {

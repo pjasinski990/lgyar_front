@@ -163,7 +163,6 @@ function Dashboard(props) {
         <>
         <DashboardHeader
             activePeriodRange={{startDate: props.user.activePeriod.startDate, endDate: props.user.activePeriod.endDate}}
-            onPeriodRangeChanged={() => {console.log('onPeriodRangeChanged')}}
             availableMoney={availableMoney}
             onAvailableMoneyChanged={onAvailableMoneyChanged}
         />

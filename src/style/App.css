@@ -16,6 +16,13 @@
     box-shadow: none !important;
 }
 
+button {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background-color: white;
+}
+
 .btn-secondary {
     background-color: darkkhaki !important;
 }

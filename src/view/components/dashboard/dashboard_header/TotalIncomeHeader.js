@@ -37,14 +37,14 @@ function TotalIncomeHeader(props) {
                                 placeholder={props.availableMoney}
                                 onValueChange={value => setAvailableMoney(value)}
                             />
-                            <btn
+                            <button
                                 type={'submit'}
                                 onClick={updateAvailableMoney}
                                 className={'px-2'}
                                 style={applyIconStyle}
                             >
                                 <MdOutlineDone size={'1.1em'}/>
-                            </btn>
+                            </button>
                         </div>
                     </Col>
                 </Row>
