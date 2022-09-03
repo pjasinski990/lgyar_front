@@ -3,42 +3,42 @@ import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-datepicker/dist/react-datepicker.css'
 import React from "react";
-import {makeBackendFormRequest} from "../../util";
+import {makeBackendFormRequest} from "../../backendUtil";
 import {Link} from "react-router-dom";
 
 const postLogin = async (username, password) => {
     return makeBackendFormRequest('login', {username: username, password: password})
 }
 
-const attemptLogin = async (event) => {
-    event.preventDefault()
-    const {loginFormUsername, loginFormPassword} = document.forms[0]
-    if (!loginFormUsername.value) {
-        toast.error('Username field is empty')
-        return
-    }
-    if (!loginFormPassword.value) {
-        toast.error('Password field is empty')
-        return
-    }
-    postLogin(loginFormUsername.value, loginFormPassword.value)
-        .then(res => {
-            if (res.ok) {
-                res.json()
-                    .then(data => {
-                        // TODO this is not safe. use httponly cookies instead of local storage
-                        sessionStorage.setItem('access_token', data['access_token'])
-                        sessionStorage.setItem('refresh_token', data['refresh_token'])
-                        window.location.replace('/home')
-                    })
-            }
-            else {
-                toast.error('Incorrect credentials')
-            }
-        })
-}
-
 function LoginPage(props) {
+    const attemptLogin = async (event) => {
+        event.preventDefault()
+        const {loginFormUsername, loginFormPassword} = document.forms[0]
+        if (!loginFormUsername.value) {
+            toast.error('Username field is empty')
+            return
+        }
+        if (!loginFormPassword.value) {
+            toast.error('Password field is empty')
+            return
+        }
+        postLogin(loginFormUsername.value, loginFormPassword.value)
+            .then(res => {
+                if (res.ok) {
+                    res.json()
+                        .then(data => {
+                            // TODO this is not safe. use httponly cookies instead of local storage
+                            sessionStorage.setItem('access_token', data['access_token'])
+                            sessionStorage.setItem('refresh_token', data['refresh_token'])
+                            props.onUserLogin()
+                        })
+                }
+                else {
+                    toast.error('Incorrect credentials')
+                }
+            })
+    }
+
     return (
         <>
             <Container className={'content-container border'}>

@@ -2,7 +2,7 @@ import React from "react";
 import {toast} from "react-toastify";
 import {Button, Container, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {makeBackendFormRequest} from "../../util";
+import {makeBackendFormRequest} from "../../backendUtil";
 
 const attemptRegister = async (event) => {
     event.preventDefault()

@@ -58,7 +58,7 @@ function Envelope(props) {
                                 style={applyIconStyle}
                                 onClick={editEnvelope}
                             >
-                                <MdOutlineDone size={'1.1em'}/>
+                                <MdOutlineDone size={'1.3em'}/>
                             </button>
                         </Stack>
                     </Form>
@@ -71,7 +71,7 @@ function Envelope(props) {
                             style={removeIconStyle}
                             onClick={removeEnvelope}
                         >
-                            <MdDeleteOutline size={'1.1em'}/>
+                            <MdDeleteOutline size={'1.3em'}/>
                         </button>
                     </div>
                     <ProgressBar input={progress}

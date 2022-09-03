@@ -2,13 +2,12 @@ import {Container, Nav, Navbar} from 'react-bootstrap'
 import React from "react"
 import {toast, ToastContainer} from "react-toastify"
 
-const logout = async (event) => {
-    event.preventDefault()
-    sessionStorage.clear()
-    window.location.replace('/home')
-}
-
 function HeaderLogged(props) {
+    const logout = event => {
+        event.preventDefault()
+        props.onUserLogout()
+    }
+
     return (
         <>
             <Navbar bg={'dark'} variant={'dark'}>
@@ -27,7 +26,7 @@ function HeaderLogged(props) {
                 </Container>
             </Navbar>
             <ToastContainer
-                position="top-center"
+                position='top-right'
                 autoClose={2000}
                 closeOnClick
                 pauseOnFocusLoss
@@ -66,9 +65,12 @@ function Header(props) {
     if (props.error) {
         toast.error(props.error)
     }
-    const logged = props.user.logged
-    const isAdmin = props.user.role === 'ROLE_ADMIN'
-    return logged ? <HeaderLogged isAdmin={isAdmin}/> : <HeaderNonLogged/>
+
+    let isAdmin = false
+    if (props.user) {
+        isAdmin = props.user.role === 'ROLE_ADMIN'
+    }
+    return props.user ? <HeaderLogged isAdmin={isAdmin} onUserLogout={props.onUserLogout}/> : <HeaderNonLogged/>
 }
 
 export default Header

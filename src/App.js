@@ -1,65 +1,87 @@
-import React, {useState} from "react";
-import {Route, Routes} from "react-router-dom";
-import LoginPage from "./view/pages/LoginPage";
-import RegisterPage from "./view/pages/RegisterPage";
-import ArchivePage from "./view/pages/ArchivePage";
-import StatsPage from "./view/pages/StatsPage";
-import {getEmptyUser, makeBackendRequest} from "./util";
-import HomePage from "./view/pages/HomePage";
-import AdminPage from "./view/pages/AdminPage";
-import Header from "./view/components/header/Header";
-import Footer from "./view/components/footer/Footer";
-import {ThreeDots} from "react-loading-icons";
-
-const getLoggedUser = async () => {
-    let user = getEmptyUser()
-    const res = await makeBackendRequest('user', 'get', null, null)
-    if (res.ok) {
-        const data = await res.json()
-        user.username = data['username']
-        user.role = data['role']
-        user.activePeriod = data['activePeriod']
-        user.previousPeriods = data['previousPeriods']
-        user.logged = true
-    }
-    return user
-}
+import React, {useState} from 'react'
+import * as PropTypes from 'prop-types'
+import {Navigate, Route, Routes} from 'react-router-dom'
+import LoginPage from './view/pages/LoginPage'
+import RegisterPage from './view/pages/RegisterPage'
+import ArchivePage from './view/pages/ArchivePage'
+import StatsPage from './view/pages/StatsPage'
+import {sessionGetLoggedUser, sessionLoadUserData} from './backendUtil'
+import HomePage from './view/pages/HomePage'
+import AdminPage from './view/pages/AdminPage'
+import Header from './view/components/header/Header'
+import Footer from './view/components/footer/Footer'
+import LandingPage from './view/pages/LandingPage'
+import ThreeDots from "react-loading-icons/dist/esm/components/three-dots";
 
 function App() {
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(sessionGetLoggedUser())
+    const [loading, setLoading] = useState(false)
 
-    getLoggedUser()
-        .then(u => {
-            if (user === null) {
-                setUser(getEmptyUser())
-            }
-            else if (user.username !== u.username) {
-                setUser(u)
-            }
-        })
+    const onUserLogin = () => {
+        setLoading(true)
+        sessionLoadUserData()
+            .then(() => {
+                setUser(sessionGetLoggedUser())
+                setLoading(false)
+                window.location.replace('home')
+            })
+    }
+
+    const onUserLogout = () => {
+        setUser(null)
+        sessionStorage.clear()
+        window.location.replace('landing')
+    }
+
+    function ProtectedRoute (props) {
+        ProtectedRoute.propTypes = {
+            user: PropTypes.object.isRequired
+        }
+        if (!props.user) {
+            return <Navigate to={'/landing'} replace={true}/>
+        }
+        return props.children
+    }
 
     return (
     <>
         <div>
-            {user === null &&
+            {loading ?
             <>
-                <Header user={getEmptyUser()}/>
+                <Header user={null} onUserLogout={onUserLogout}/>
                 <div id={'loading-icon'} className={'d-flex justify-content-center align-items-center'}>
                     <ThreeDots stroke='green' height={'5em'}/>
                 </div>
             </>
-            }
-            {user !== null &&
+                :
             <>
-                <Header user={user}/>
+                <Header user={user} onUserLogout={onUserLogout}/>
                 <Routes>
-                    <Route path={'/'} element={user && <HomePage user={user}/>} />
-                    <Route path={'/home'} element={user && <HomePage user={user}/>} />
-                    <Route path={'/login'} element={user && <LoginPage user={user}/>} />
-                    <Route path={'/register'} element={user && <RegisterPage user={user}/>} />
-                    <Route path={'/archive'} element={user && <ArchivePage user={user}/>} />
-                    <Route path={'/stats'} element={user && <StatsPage user={user}/>} />
-                    <Route path={'/admin'} element={user && <AdminPage user={user}/>} />
+                    <Route path={''} element={<LandingPage user={user}/>}/>
+                    <Route path={'landing'} element={<LandingPage user={user}/>}/>
+                    <Route path={'login'} element={<LoginPage user={user} onUserLogin={onUserLogin}/>}/>
+                    <Route path={'register'} element={<RegisterPage user={user}/>}/>
+
+                    <Route path={'home'} element={
+                        <ProtectedRoute user={user}>
+                            <HomePage user={user}/>
+                        </ProtectedRoute>
+                    }/>
+                    <Route path={'archive'} element={
+                        <ProtectedRoute user={user}>
+                            <ArchivePage/>
+                        </ProtectedRoute>
+                    }/>
+                    <Route path={'stats'} element={
+                        <ProtectedRoute user={user}>
+                            <StatsPage user={user}/>
+                        </ProtectedRoute>
+                    }/>
+                    <Route path={'admin'} element={
+                        <ProtectedRoute user={user}>
+                            <AdminPage user={user}/>
+                        </ProtectedRoute>
+                    }/>
                 </Routes>
             </>
             }

@@ -1,24 +1,24 @@
 import React, {forwardRef, useState} from "react";
+import {toast} from "react-toastify";
 import {useMediaPredicate} from 'react-media-hook'
 import DatePicker from 'react-datepicker'
-import * as propTypes from "prop-types";
 import dateFormat from "dateformat";
-import {makeBackendRequest} from "../../../../util";
+import {
+    makeBackendRequest,
+    sessionGetActivePeriod,
+    sessionSetEndDate,
+    sessionSetStartDate
+} from "../../../../backendUtil";
 import {BiCalendarEdit} from "react-icons/bi";
 
 function PeriodRangePicker(props) {
-    PeriodRangePicker.propTypes = {
-        onStartDateChanged: propTypes.func.isRequired,
-        onEndDateChanged: propTypes.func.isRequired
-    }
-    const [startDate, setStartDate] = useState(new Date())
+    const [startDate, setStartDate] = useState(null)
     const [endDate, setEndDate] = useState(null)
 
     const onChange = (dates) => {
         const [start, end] = dates
         setStartDate(start)
         setEndDate(end)
-
         if (!!end) {
             props.onStartDateChanged(dateFormat(start, 'yyyy-mm-dd'))
             props.onEndDateChanged(dateFormat(end, 'yyyy-mm-dd'))
@@ -26,7 +26,6 @@ function PeriodRangePicker(props) {
     }
     return (
         <DatePicker
-            selected={startDate}
             onChange={onChange}
             startDate={startDate}
             endDate={endDate}
@@ -42,12 +41,8 @@ const EditRangeButton = forwardRef(({value, onClick}, ref) =>(
 
 
 function ActivePeriodRange(props) {
-    ActivePeriodRange.propTypes = {
-        activePeriodRange: propTypes.object.isRequired,
-    }
-
-    const [startDate, setStartDate] = useState(props.activePeriodRange.startDate)
-    const [endDate, setEndDate] = useState(props.activePeriodRange.endDate)
+    const [startDate, setStartDate] = useState(sessionGetActivePeriod().startDate)
+    const [endDate, setEndDate] = useState(sessionGetActivePeriod().endDate)
     const biggerThan768px = useMediaPredicate('(min-width: 768px)')
 
     const onStartDateChanged = (newDate) => {
@@ -57,6 +52,12 @@ function ActivePeriodRange(props) {
             .then(res => {
                 if (res.ok) {
                     setStartDate(newDate)
+                    sessionSetStartDate(newDate)
+                }
+                else {
+                    res.json()
+                        .then(data => toast.error(data['error_message']))
+                        .catch(err => console.error(err))
                 }
             })
     }
@@ -68,6 +69,7 @@ function ActivePeriodRange(props) {
             .then(res => {
                 if (res.ok) {
                     setEndDate(newDate)
+                    sessionSetEndDate(newDate)
                 }
             })
     }

@@ -6,44 +6,20 @@ import TransactionContainer from "./transaction/TransactionsContainer";
 import Container from "react-bootstrap/Container";
 import EnvelopeContainer from "./envelope/EnvelopeContainer";
 import NewEnvelopeButton from "./envelope/NewEnvelopeButton";
-import {makeBackendRequest} from "../../../util";
+import {calculateMoneyInEnvelopes, getUpdatedEnvelopes} from "../../../util";
 import DashboardHeader from "./dashboard_header/DashboardHeader";
-import * as propTypes from "prop-types";
-
-const calculateMoneySpent = (category, transactions) => {
-    if (!transactions || transactions.length === 0) {
-        return 0
-    }
-
-    const relatingTransactions = transactions.filter(t => t.category === category)
-    let acc = 0
-    for (const t of relatingTransactions) {
-        acc += Number(t.balanceDifference)
-    }
-    return -acc
-}
-
-const getUpdatedEnvelopes = (envelopes, transactions) => {
-    const revaluedEnvelopes = envelopes.slice(0)
-    for (let i = 0; i < revaluedEnvelopes.length; ++i) {
-        revaluedEnvelopes[i].spent = calculateMoneySpent(revaluedEnvelopes[i].categoryName, transactions)
-    }
-    return revaluedEnvelopes
-}
-
-const calculateMoneyInEnvelopes = (envelopes) => {
-    return envelopes.reduce((accumulator, e) => accumulator + Number(e.limit), 0)
-}
+import {
+    makeBackendRequest,
+    sessionGetActivePeriod, sessionSetAvailableMoney,
+    sessionSetEnvelopes,
+    sessionSetTransactions
+} from "../../../backendUtil";
 
 function Dashboard(props) {
-    Dashboard.propTypes = {
-        user: propTypes.object.isRequired
-    }
-
-    const [transactions, setTransactions] = useState(props.user.activePeriod.transactions)
-    const [envelopes, setEnvelopes] = useState(getUpdatedEnvelopes(props.user.activePeriod.envelopes, transactions))
-    const [availableMoney, setAvailableMoney] = useState(props.user.activePeriod.availableMoney)
-    const [unassignedMoney, setUnassignedMoney] = useState(props.user.activePeriod.availableMoney - calculateMoneyInEnvelopes(envelopes))
+    const [transactions, setTransactions] = useState(sessionGetActivePeriod().transactions)
+    const [envelopes, setEnvelopes] = useState(getUpdatedEnvelopes(sessionGetActivePeriod().envelopes, transactions))
+    const [availableMoney, setAvailableMoney] = useState(sessionGetActivePeriod().availableMoney)
+    const [unassignedMoney, setUnassignedMoney] = useState(sessionGetActivePeriod().availableMoney - calculateMoneyInEnvelopes(envelopes))
 
     const onTransactionAdded = (newTransaction) => {
         if (transactions.find(t => t.timestamp === newTransaction.timestamp)) {
@@ -59,12 +35,14 @@ function Dashboard(props) {
                         .then(newTransaction => {
                             const newTransactions = [...transactions, newTransaction]
                             setTransactions(newTransactions)
+                            sessionSetTransactions(newTransactions)
 
                             const i = envelopes.findIndex(e => e.categoryName === newTransaction.category)
                             const updatedEnvelope = envelopes[i]
                             updatedEnvelope.spent -= Number(newTransaction.balanceDifference)
                             const newEnvelopes = ([...envelopes.slice(0, i), updatedEnvelope, ...envelopes.slice(i + 1)])
                             setEnvelopes(newEnvelopes)
+                            sessionSetEnvelopes(newEnvelopes)
                         })
                 }
             })
@@ -80,17 +58,20 @@ function Dashboard(props) {
                         return val.timestamp !== removedTransaction.timestamp
                     })
                     setTransactions(newTransactions)
+                    sessionSetTransactions(newTransactions)
 
                     const i = envelopes.findIndex(e => e.categoryName === removedTransaction.category)
                     const updatedEnvelope = envelopes[i]
                     updatedEnvelope.spent += Number(removedTransaction.balanceDifference)
                     const newEnvelopes = ([...envelopes.slice(0, i), updatedEnvelope, ...envelopes.slice(i + 1)])
                     setEnvelopes(newEnvelopes)
+                    sessionSetEnvelopes(newEnvelopes)
                 }
             })
     }
 
     const onEnvelopeAdded = (envelope) => {
+        // TODO validate in backend
         if (!!envelopes.find(e => e.categoryName === envelope.categoryName)) {
             toast.error('Envelope with this name already exists')
             return
@@ -105,6 +86,7 @@ function Dashboard(props) {
                         .then(newEnvelope => {
                             const newEnvelopes = [...envelopes, newEnvelope]
                             setEnvelopes(newEnvelopes)
+                            sessionSetEnvelopes(newEnvelopes)
                             setUnassignedMoney(availableMoney - calculateMoneyInEnvelopes(newEnvelopes))
                         })
                 }
@@ -120,6 +102,7 @@ function Dashboard(props) {
                     const targetIndex = envelopes.findIndex(e => e.categoryName === envelope.categoryName)
                     const newEnvelopes = ([...envelopes.slice(0, targetIndex), envelope, ...envelopes.slice(targetIndex + 1)])
                     setEnvelopes(newEnvelopes)
+                    sessionSetEnvelopes(newEnvelopes)
                     setUnassignedMoney(availableMoney - calculateMoneyInEnvelopes(newEnvelopes))
                 }
             })
@@ -139,6 +122,7 @@ function Dashboard(props) {
                         return val.categoryName !== envelope.categoryName
                     })
                     setEnvelopes(newEnvelopes)
+                    sessionSetEnvelopes(newEnvelopes)
                     setUnassignedMoney(availableMoney - calculateMoneyInEnvelopes(newEnvelopes))
                 }
             })
@@ -153,6 +137,7 @@ function Dashboard(props) {
                     res.json()
                         .then(newTransaction => {
                             setAvailableMoney(newValue)
+                            sessionSetAvailableMoney(newValue)
                             setUnassignedMoney(newValue - calculateMoneyInEnvelopes(envelopes))
                         })
                 }
@@ -162,7 +147,7 @@ function Dashboard(props) {
     return (
         <>
         <DashboardHeader
-            activePeriodRange={{startDate: props.user.activePeriod.startDate, endDate: props.user.activePeriod.endDate}}
+            activePeriodRange={{startDate: sessionGetActivePeriod().startDate, endDate: sessionGetActivePeriod().endDate}}
             availableMoney={availableMoney}
             onAvailableMoneyChanged={onAvailableMoneyChanged}
         />

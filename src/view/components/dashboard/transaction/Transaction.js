@@ -42,7 +42,7 @@ function Transaction(props) {
                         style={removeIconStyle}
                         onClick={removeTransaction}
                     >
-                        <MdDeleteOutline size={'1.1em'}/>
+                        <MdDeleteOutline size={'1.3em'}/>
                     </button>
                 </Col>
             </Row>

@@ -11,7 +11,7 @@ function EnvelopeContainer(props) {
 
     let envelopes;
     if (!!props.envelopes) {
-        envelopes = props.envelopes.map((e) => {
+        envelopes = props.envelopes.map(e => {
             const nSpent = Number(e.spent)
             const nLimit = Number(e.limit)
             return (

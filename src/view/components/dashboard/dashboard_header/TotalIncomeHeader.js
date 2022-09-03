@@ -43,7 +43,7 @@ function TotalIncomeHeader(props) {
                                 className={'px-2'}
                                 style={applyIconStyle}
                             >
-                                <MdOutlineDone size={'1.1em'}/>
+                                <MdOutlineDone size={'1.3em'}/>
                             </button>
                         </div>
                     </Col>
