@@ -77,6 +77,7 @@ function NewTransactionButton(props) {
                         disableGroupSeparators={true}
                         allowNegativeValue={false}
                         decimalScale={2}
+                        decimalSeparator={'.'}
                         placeholder={'Value'}
                         onValueChange={handleTransactionValueChange}
                     />

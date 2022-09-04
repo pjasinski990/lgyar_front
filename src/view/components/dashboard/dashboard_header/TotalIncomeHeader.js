@@ -33,6 +33,7 @@ function TotalIncomeHeader(props) {
                                 id={'incomeInput'}
                                 disableGroupSeparators={true}
                                 allowNegativeValue={false}
+                                decimalSeparator={'.'}
                                 decimalScale={2}
                                 placeholder={props.availableMoney}
                                 onValueChange={value => setAvailableMoney(value)}

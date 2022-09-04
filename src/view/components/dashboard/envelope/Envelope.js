@@ -50,6 +50,7 @@ function Envelope(props) {
                                 disableGroupSeparators={true}
                                 allowNegativeValue={false}
                                 decimalScale={2}
+                                decimalSeparator={'.'}
                                 placeholder={props.limit}
                                 onValueChange={value => setNewLimit(value)}
                             />
