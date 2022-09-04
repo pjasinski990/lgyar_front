@@ -47,7 +47,7 @@ function LoginPage(props) {
                     <Form onSubmit={attemptLogin}>
                         <Form.Group className='mb-2' controlId='loginFormUsername'>
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type='username' placeholder='Username' />
+                                <Form.Control type='username' placeholder='Username'/>
                         </Form.Group>
                         <Form.Group className='mb-4' controlId='loginFormPassword'>
                             <Form.Label>Password</Form.Label>

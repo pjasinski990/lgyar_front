@@ -60,6 +60,7 @@ function ActivePeriodRange(props) {
                         .catch(err => console.error(err))
                 }
             })
+            .catch(err => console.error(err))
     }
 
     const onEndDateChanged = (newDate) => {

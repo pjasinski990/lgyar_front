@@ -6,7 +6,6 @@ import {makeBackendRequest, sessionGetArchive, sessionSetActivePeriod, sessionSe
 
 function ArchivePage(props) {
     const [archive, setArchive] = useState(sessionGetArchive())
-    console.log('archive is ', archive)
 
     const onPeriodActivated = (activatedPeriod) => {
         const headers = {'Content-Type': 'application/JSON'}

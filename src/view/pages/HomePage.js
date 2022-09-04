@@ -8,7 +8,13 @@ import Row from 'react-bootstrap/Row'
 import {getEmptyBudgetingPeriod} from '../../util'
 import {defaultEnvelopes} from '../../res/defaultEnvelopes'
 import Dashboard from '../components/dashboard/Dashboard'
-import {sessionGetActivePeriod, makeBackendRequest, sessionGetArchive, sessionSetArchive} from '../../backendUtil'
+import {
+    sessionGetActivePeriod,
+    makeBackendRequest,
+    sessionGetArchive,
+    sessionSetArchive,
+    sessionSetActivePeriod
+} from '../../backendUtil'
 
 function HomePage(props) {
     const [activePeriod, setActivePeriod] = useState(sessionGetActivePeriod())
@@ -16,8 +22,9 @@ function HomePage(props) {
     function createNewActivePeriod(event) {
         const newPeriod = getEmptyBudgetingPeriod()
         const headers = {'Content-Type': 'application/JSON'}
-        if (props.user.previousPeriods && props.user.previousPeriods.length > 0) {
-            const lastPeriod = props.user.previousPeriods.slice(-1)[0]
+        const archive = sessionGetArchive()
+        if (archive && archive.length > 0) {
+            const lastPeriod = archive.slice(-1)[0]
             const lastEnvelopes = lastPeriod.envelopes
             newPeriod.envelopes = lastEnvelopes.map((e) => {
                 e.spent = '0'
@@ -51,14 +58,16 @@ function HomePage(props) {
         makeBackendRequest('ap/archive', 'post', null, null)
             .then(res => {
                 if (res.ok) {
-                    const archive = sessionGetArchive() ? sessionGetArchive() : []
-                    const activePeriodUpdated = sessionGetActivePeriod()
-                    archive.push(activePeriodUpdated)
-                    sessionSetArchive(archive)
+                    res.json().then(archived => {
+                        const archive = sessionGetArchive() ? sessionGetArchive() : []
+                        archive.push(archived)
+                        sessionSetArchive(archive)
 
-                    setActivePeriod(null)
-                    sessionStorage.setItem('active_period', null)
-                    toast.success('Period archived')
+                        setActivePeriod(null)
+                        sessionSetActivePeriod(null)
+                        toast.success('Period archived')
+                    })
+                        .catch(err => console.error(err))
                 }
                 else {
                     res.json()
@@ -66,6 +75,7 @@ function HomePage(props) {
                         .catch(err => console.error(err))
                 }
             })
+            .catch(err => console.error(err))
     }
 
     return (

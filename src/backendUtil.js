@@ -54,7 +54,6 @@ export const makeBackendRequest = async (url, method, body, headers) => {
                     }
                     // Handle expired session
                     else {
-                        console.log('session expired')
                         if (!!sessionStorage.getItem('access_token')) {
                             sessionStorage.clear()
                             window.location.replace('/login')
@@ -91,7 +90,7 @@ export const sessionLoadUserData = async () => {
         sessionStorage.setItem('active_period', JSON.stringify(data.activePeriod))
     }
     else {
-        console.log(retrieveUserRes)
+        console.error(retrieveUserRes)
     }
 }
 

@@ -30,16 +30,19 @@ function PreviousPeriodsContainer(props) {
         })
         return (
             <>
-                <div className={'d-grid mx-3'}>
+                <div className={'d-grid mx-2'}>
                     <Row>
-                        <Col>
-                            <b>Time range</b>
+                        <Col xs={4}>
+                            <b className={'px-1'}>Period</b>
                         </Col>
-                        <Col>
-                            <b>Available money</b>
+                        <Col xs={3} className={'d-flex justify-content-end'}>
+                            <b>Spent / Available</b>
                         </Col>
-                        <Col className={'d-flex justify-content-end'}>
-                            <b>Action</b>
+                        <Col xs={2} className={'d-flex justify-content-end'}>
+                            <b>Transactions</b>
+                        </Col>
+                        <Col xs={3} className={'d-flex justify-content-end'}>
+                            <b className={'px-1'}>Action</b>
                         </Col>
                     </Row>
                 </div>
